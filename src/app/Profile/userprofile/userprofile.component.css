@@ -1,5 +1,6 @@
 /* Global Styles */
-@import "~flag-icons/css/flag-icons.min.css";
+@import 'flag-icons/css/flag-icons.min.css';
+
 
 html, body {
   margin: 0;
