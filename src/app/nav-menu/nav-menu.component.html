@@ -1,0 +1,105 @@
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  rel="stylesheet"
+/>
+
+<nav class="navbar">
+  <div class="container">
+
+    <!-- Left Section -->
+    <div class="navbar-left">
+      <a class="brand" [routerLink]="['/home']">
+         <img src="assets/Logo.png" alt="Abbali Logo" />
+      </a>
+
+      <!-- Desktop Categories -->
+      <div class="categories-row desktop-only">
+        <ul class="nav-categories">
+          <li
+            [class.active]="!selectedCategoryId"
+            (click)="onCategoryChange(null)">
+            All
+          </li>
+          <li
+            *ngFor="let category of categories"
+            [class.active]="selectedCategoryId === category.id"
+            (click)="onCategoryChange(category.id)">
+            {{ category.name }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mobile Categories Dropdown -->
+      <div class="mobile-only">
+        <select
+          id="mobile-category-select"
+          class="category-select"
+          (change)="onMobileCategoryChange($event)"
+          [value]="selectedCategoryId || ''"
+          aria-label="Select Category"
+        >
+          <option value="">All</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Center Section -->
+    <div class="navbar-center" >
+      <input
+        type="search"
+        placeholder="Search products..."
+        [(ngModel)]="searchTerm"
+        (keyup)="onSearchChange()"
+        aria-label="Search products"
+      />
+    </div>
+
+    <!-- Right Section -->
+    <div class="navbar-right">
+      <div class="extra-links">
+        <a [routerLink]="['/home']" class="nav-link">Home</a>
+        <button  class="nav-link" (click)="goToContact()">Contact</button>
+        <a [routerLink]="['/about']" class="nav-link">About</a>
+      </div>
+
+      <a class="icon-link" [routerLink]="['/cart']" aria-label="Cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span *ngIf="TotalItems > 0" class="badge">{{ TotalItems }}</span>
+      </a>
+
+      <a
+        class="icon-link"
+        *ngIf="isAuthenticated"
+        [routerLink]="['/wish']"
+        aria-label="Wishlist">
+        <i class="fas fa-heart"></i>
+      </a>
+
+      <div
+        *ngIf="isAuthenticated"
+        class="user-dropdown"
+        (click)="toggleUserDropdown()"
+        tabindex="0"
+        role="button"
+        aria-haspopup="true"
+        [attr.aria-expanded]="userDropdownOpen"
+      >
+        <i class="fas fa-user"></i>
+        <ul class="dropdown-menu" [class.show]="userDropdownOpen">
+          <li><a [routerLink]="['/profile']">Profile</a></li>
+          <li><button (click)="logout()">Logout</button></li>
+        </ul>
+      </div>
+
+      <a
+        *ngIf="!isAuthenticated"
+        class="connect-btn"
+        [routerLink]="['/login']"
+        >Connect</a>
+    </div>
+
+  </div>
+</nav>

@@ -1,0 +1,57 @@
+<div class="main-container">
+  <!-- Cart Section (Left) -->
+  <div class="left-div cart">
+    <!-- Title -->
+    <div class="title">
+      <div class="row">
+        <div class="col">
+          <h4><b>Shopping Cart</b></h4>
+        </div>
+      
+      </div>
+    </div>
+    <div *ngIf="CartItems.length > 0" class="cart-items">
+    <div class="cart-item" *ngFor="let item of CartItems; let i = index">
+    <img [src]="item.imageUrl"  class="img-fluid" (click)="productdescription(item)" />
+    <div class="item-info">
+    <div class="item-details">
+     <span class="item-title">{{ item.name }}</span>
+      <div class="quantity-controls">
+     <button class="btn-quantity" (click)="decreaseQuantityCart(item.id,item.selectedSize)" >-</button>
+     <input type="text" [value]="item.quantity" readonly class="quantity-input"/>
+     <button class="btn-quantity" (click)="addQuantityCart(item.id,item.selectedSize)">+</button> 
+    </div>
+     <span class="item-price">{{ item.price| currency }}</span>
+     <span class="item-size">Size: <span class="size-badge">{{ item.selectedSize }}</span></span>
+
+      </div>
+        </div>
+        <button class="btn-delete" (click)="removeFromCart(item.id,item.selectedSize)">x</button>
+      </div>
+    </div>
+    <div class="back-to-shop">
+      <a [routerLink]="'/home'">&leftarrow;</a><span class="text-muted"></span>
+    </div>
+  </div>
+  <div class="right-div summary">
+    <div><h5><b>Summary</b></h5></div>
+    <hr>
+    <div class="row">
+      <div class="col" style="padding-left:0;">ITEMS {{ CartItems.length }}</div>
+      <div class="col text-right">{{ getTotal() | currency }}</div>
+    </div>
+      <form>
+        <p>SHIPPING</p>
+        <select>
+          <option class="text-muted">Standard-Delivery-</option>
+        </select>
+        <p>GIVE CODE</p>
+        <input id="code" placeholder="Enter your code">
+      </form>
+    <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+      <div class="col">TOTAL PRICE</div>
+      <div class="col text-right">{{ getTotal() | currency }}</div>
+    </div>
+    <button class="btn" (click)="checkout()" >CHECKOUT</button>
+  </div>
+</div>

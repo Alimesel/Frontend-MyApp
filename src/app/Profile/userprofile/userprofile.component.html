@@ -1,0 +1,89 @@
+<div class="profile-container" *ngIf="profile">
+  <h2>{{profile.userName}}'s Profile </h2>
+  <form class="profile-form" (ngSubmit)="onsubmit()">
+    <div class="profile-grid">
+      <div class="profile-field">
+        <label for="firstName"><strong>First Name:</strong></label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          [(ngModel)]="profile.firstname"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="lastName"><strong>Last Name:</strong></label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          [(ngModel)]="profile.lastName"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="userName"><strong>User Name:</strong></label>
+        <input
+          type="text"
+          id="userName"
+          name="userName"
+          [(ngModel)]="profile.userName"
+          readonly
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="email"><strong>Email:</strong></label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="profile.email"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="phoneNumber"><strong>Phone Number:</strong></label>
+        <input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          [(ngModel)]="profile.phoneNumber"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="country"><strong>Country:</strong></label>
+        <input
+          type="text"
+          id="country"
+          name="country"
+          [(ngModel)]="profile.country"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+      <div class="profile-field">
+        <label for="city"><strong>City:</strong></label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          [(ngModel)]="profile.city"
+          [readonly]="!isEditing"
+          required
+        />
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="button" *ngIf="!isEditing" (click)="enableEditing()" class="edit-button">Edit</button>
+      <button type="submit" *ngIf="isEditing" class="save-button">Save Changes</button>
+      <button type="button" *ngIf="isEditing" (click)="cancelEditing()" class="cancel-button">Cancel</button>
+    </div>
+  </form>
+</div>

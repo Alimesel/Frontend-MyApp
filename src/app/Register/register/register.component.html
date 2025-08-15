@@ -1,0 +1,84 @@
+<div class="login-wrapper">
+  <!-- Left Logo -->
+  <div class="image-container">
+    <img src="assets/Logo.png" alt="Abbali Logo" />
+  </div>
+
+  <!-- Right Register Form -->
+  <div class="form-container">
+    <div class="card">
+      <a class="login">Sign Up</a>
+      <form [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
+        
+        <!-- First Name & Last Name -->
+        <div class="form-row">
+          <div class="form-field">
+            <input type="text" id="firstname" formControlName="firstname" placeholder=" ">
+            <label for="firstname">First Name</label>
+          </div>
+          <div class="form-field">
+            <input type="text" id="lastname" formControlName="lastname" placeholder=" ">
+            <label for="lastname">Last Name</label>
+          </div>
+        </div>
+
+        <!-- Username & Email -->
+        <div class="form-row">
+          <div class="form-field">
+            <input type="text" id="username" formControlName="username" placeholder=" ">
+            <label for="username">Username</label>
+            <div *ngIf="RegisterForm.get('username')?.invalid && (RegisterForm.get('username')?.touched || formSubmitted)">
+              <small *ngIf="RegisterForm.get('username')?.errors?.['required']">Username is required</small>
+            </div>
+          </div>
+          <div class="form-field">
+            <input type="email" id="email" formControlName="Email" placeholder=" ">
+            <label for="email">Email</label>
+            <div *ngIf="RegisterForm.get('Email')?.invalid && (RegisterForm.get('Email')?.touched || formSubmitted)">
+              <small *ngIf="RegisterForm.get('Email')?.errors?.['required']">Email is required</small>
+              <small *ngIf="RegisterForm.get('Email')?.errors?.['email']">Invalid email format</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password & Phone Number -->
+        <div class="form-row">
+          <div class="form-field">
+            <input type="password" id="password" formControlName="Password" placeholder=" ">
+            <label for="password">Password</label>
+            <div *ngIf="RegisterForm.get('Password')?.invalid && (RegisterForm.get('Password')?.touched || formSubmitted)">
+              <small *ngIf="RegisterForm.get('Password')?.errors?.['required']">Password is required</small>
+              <small *ngIf="RegisterForm.get('Password')?.errors?.['minlength']">Password must be at least 6 characters long</small>
+            </div>
+          </div>
+          <div class="form-field">
+            <input type="text" id="phoneNumber" formControlName="PhoneNumber" placeholder=" ">
+            <label for="phoneNumber">Phone Number</label>
+            <div *ngIf="RegisterForm.get('PhoneNumber')?.invalid && (RegisterForm.get('PhoneNumber')?.touched || formSubmitted)">
+              <small *ngIf="RegisterForm.get('PhoneNumber')?.errors?.['required']">Phone Number is required</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Country & City -->
+        <div class="form-row">
+          <div class="form-field">
+            <input type="text" id="country" formControlName="Country" placeholder=" ">
+            <label for="country">Country</label>
+          </div>
+          <div class="form-field">
+            <input type="text" id="city" formControlName="City" placeholder=" ">
+            <label for="city">City</label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="enter">Register</button>
+      </form>
+
+      <h5 class="form-footer">
+        Do you have an account? <a [routerLink]="['/login']">Login</a>
+      </h5>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+/* Global box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Base styles for container */
+.container {
+  background: linear-gradient(135deg, #ffffff, #f7f7f7);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 90%;
+  margin: 0 auto;
+  animation: popIn 0.5s ease-out;
+  text-align: center;
+}
+
+/* Headline */
+.container h2 {
+  font-size: 2rem;
+  color: #28a745;
+  font-weight: bold;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+/* Paragraph */
+.container p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+/* Button */
+.btn-primary {
+  background: linear-gradient(90deg, #28a745, #218838);
+  border: none;
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+}
+
+/* PopIn animation */
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Prevent horizontal scrolling globally */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* --- Responsive styles --- */
+
+/* For mobile phones (up to 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 25px 20px;
+    border-radius: 15px;
+    max-width: 95%;
+  }
+  .container h2 {
+    font-size: 1.5rem;
+  }
+  .container p {
+    font-size: 1rem;
+  }
+  .btn-primary {
+    padding: 12px 22px;
+    font-size: 1rem;
+  }
+}
+
+/* For tablets and small laptops (481px to 1024px) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .container {
+    padding: 35px 30px;
+    max-width: 450px;
+  }
+  .container h2 {
+    font-size: 1.75rem;
+  }
+  .container p {
+    font-size: 1.05rem;
+  }
+  .btn-primary {
+    padding: 13px 25px;
+    font-size: 1.05rem;
+  }
+}
+
+/* For larger laptops and desktops (above 1024px) */
+@media (min-width: 1025px) {
+  .container {
+    padding: 50px 40px;
+    max-width: 500px;
+  }
+  .container h2 {
+    font-size: 2rem;
+  }
+  .container p {
+    font-size: 1.1rem;
+  }
+  .btn-primary {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+  }
+}

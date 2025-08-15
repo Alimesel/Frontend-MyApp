@@ -1,0 +1,78 @@
+<div *ngIf="Product == null">
+  <div [routerLink]="'/home'" class="alert alert-danger" role="alert">
+    
+  </div>
+</div>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+<div   class="product-detail-container">
+  <!-- Product Image -->
+  <div class="product-image">
+    <img [src]="Product.imageUrl" alt="{{Product.name}}" />
+    <p *ngIf="Product.quantity <= 0" class="out-of-stock">Out of Stock</p>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info">
+    <h1>{{ Product.name }}</h1>
+    <p class="price">{{ Product.price | currency }}</p>
+    <p>{{ Product.description }}</p>
+    <div *ngIf="sizeOptions.length > 0" class="size-selector">
+  <label class="size-label"></label>
+  <div class="size-options">
+    <button *ngFor="let size of sizeOptions"
+            class="size-button"
+            [class.active]="Product.selectedSize === size"
+            (click)="selectSize(size)">
+      {{ size }}
+    </button>
+  </div>
+</div>
+
+    <!-- Buttons for Wishlist and Cart -->
+    <div class="button-container">
+      <button class="icon-button heart-beat" (click)="addToWishlist(Product.id)"  aria-label="Add to Wishlist">
+        <span class="material-symbols-outlined">favorite</span>
+      </button>
+      <button *ngIf="Product.quantity > 0" class="icon-button basket-bounce" (click)="addToCart(Product)" aria-label="Add to Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Back Button -->
+<div class="back-button-container">
+  <button (click)="goBack()" class="icon-button arrow-back" aria-label="Go Back">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+</div>
+<div class="related-products-header">
+  <span class="related-icon material-symbols-outlined">star</span>
+  <h2>You may be interested in</h2>
+</div>
+
+<div *ngIf="RelatedProducts.length > 0" class="product-container related-products">
+  <div *ngFor="let product of RelatedProducts" class="product-card">
+    <div *ngIf="product.quantity <= 0" class="out-of-stock">Out of Stock</div>
+    <div class="image-container">
+      <img [src]="product.imageUrl" [alt]="product.name" />
+    </div>
+    <div class="content">
+      <h4>{{ product.name }}</h4>
+      <div class="price">{{ product.price | currency }}</div>
+      <div class="hover-buttons">
+         <!-- Button for viewing product -->
+         <button class="icon-button eye-blink" (click)="showMoreProducts(product)" aria-label="View Product">
+          <span class="material-symbols-outlined">visibility</span>
+        </button>        
+        <button class="icon-button heart-beat" (click)="addToWishlist(product.id)" aria-label="Add to Wishlist">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <!-- <button *ngIf="product.quantity > 0" class="icon-button basket-bounce" (click)="addToCart(product)" aria-label="Add to Cart">
+          <span class="material-symbols-outlined">shopping_cart</span>
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>

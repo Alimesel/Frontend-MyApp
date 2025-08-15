@@ -1,0 +1,296 @@
+
+/* Flexbox container for the product cards */
+.product-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px auto; /* Center align with margin auto */
+  max-width: 1200px; /* Adjust max width as needed */
+ 
+}
+
+/* Product card styling */
+.product-card {
+  background: #fff;
+  border-radius: 50px;
+  overflow: visible; /* Ensure that child elements can overflow */
+  width: calc(25% - 20px); /* Adjust width to fit 4 items per row with gap */
+  text-align: center;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 350px; /* Fixed height for uniformity */
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  transform-style: preserve-3d; /* Preserve 3D transformations */
+  position: relative;
+  /* Ensure the card can accommodate the buttons */
+  padding-bottom: 40px; /* Adjusted space at the bottom for buttons */
+}
+
+.image-container {
+  width: 100%;
+  height: 230px; /* Fixed height for image container */
+  overflow: visible; /* Ensure that the image can overflow this container */
+  margin-bottom: 15px; /* Space between image and text */
+  position: relative; /* Ensure the image inside is positioned absolutely */
+  perspective: 1500px; /* Add perspective to enhance the 3D effect */
+}
+
+/* Style for images inside product cards */
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.5s ease; 
+  z-index: 1; 
+}
+
+.product-card:hover {
+  transform: perspective(1500px) rotateX(8deg) translateZ(-40px); 
+  box-shadow: 2px 2px   rgb(249, 248, 248); 
+}
+
+.product-card:hover .image-container img {
+  transform: translate(-50%, -60%) translateZ(60px); 
+}
+
+.product-card h4 {
+  font-size: 15px;
+  margin: 10px 0;
+  height: 40px; 
+  overflow: hidden;
+}
+
+.price {
+  font-size: 20px;
+  color: green;
+  font-style: italic;
+  margin: 10px 0;
+  border-top: 1px solid red; /* Top border to separate from buttons */
+  padding-top: 10px; /* Space between price and border */
+  margin-bottom: 10px; /* Reduced space before the buttons */
+}
+
+/* Button container initially hidden */
+.hover-buttons {
+  display: flex;
+  justify-content: center; /* Center-align buttons */
+  gap: 10px; /* Space between buttons */
+  position: absolute; /* Position absolutely within the product card */
+  bottom: 10px; /* Adjusted space from the bottom of the card */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 30px); /* Full width minus some padding */
+  opacity: 0; /* Hidden by default */
+  visibility: hidden; /* Hidden by default */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 2; /* Ensure it's above other content */
+}
+
+/* Show buttons on hover */
+.product-card:hover .hover-buttons {
+  opacity: 1; /* Make buttons visible */
+  visibility: visible; /* Ensure buttons are visible */
+}
+
+/* Ensure icon buttons are styled correctly */
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /* Larger font size for icons */
+  transition: transform 0.3s, color 0.3s;
+}
+
+/* Eye icon winking animation */
+.eye-blink .animated-icon {
+  animation: wink 1s infinite;
+}
+
+@keyframes wink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5; /* Eye closes halfway */
+  }
+}
+
+/* Animation for beating heart icon */
+.heart-beat .animated-icon {
+  animation: beat 2s infinite;
+}
+
+@keyframes beat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animation for bouncing basket icon */
+.basket-bounce .animated-icon {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Apply specific styles for wishlist icon */
+.icon-button.heart-beat {
+  color: red; /* Red color for wishlist icon */
+}
+
+/* Apply styles for eye icon */
+.icon-button.eye-blink {
+  color: #007bff; /* Adjust color as needed */
+}
+
+/* Apply styles for basket icon */
+.icon-button.basket-bounce {
+  color: #e6610f; /* Adjust color as needed */
+}
+
+/* Styling for no products message */
+/* Styling for no products message */
+.no-products {
+  text-align: center;
+  margin: 20px auto;
+  font-size: 18px;
+  color: #666;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Keep it centered and not too wide */
+  padding-top: 150px; /* Added so it's below navbar */
+}
+
+
+/* Out-of-stock badge styling */
+.out-of-stock {
+  position: absolute;
+  top: 10px; /* Position near the top of the card */
+  right: 10px; /* Align to the right side of the card */
+  background-color: #e74c3c; /* Darker red background */
+  color: #fff; /* White text color */
+  padding: 8px 12px;
+  font-weight: bold;
+  border-radius: 50px;
+  transform: scale(0.85);
+  opacity: 0;
+  animation: showOutOfStock 0.5s forwards;
+}
+
+@keyframes showOutOfStock {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive styles for the product cards to fit better on smaller screens */
+@media (max-width: 768px) {
+  .product-card {
+    width: calc(50% - 20px); /* 2 items per row */
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    width: calc(100% - 20px); /* 1 item per row */
+  }
+}
+  /* Ensure icon buttons are styled correctly */
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /* Larger font size for icons */
+  transition: transform 0.3s, color 0.3s;
+}
+
+/* Delete button with red basket icon */
+.delete-basket {
+  color: #e74c3c; /* Red color for delete icon */
+}
+
+/* Apply hover effect to delete button */
+.delete-basket:hover {
+  color: #c0392b; /* Darker red color on hover */
+}
+
+/* Other existing styles */
+.eye-blink .animated-icon {
+  animation: wink 1s infinite;
+}
+
+@keyframes wink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5; /* Eye closes halfway */
+  }
+}
+
+.basket-bounce .animated-icon {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Ensure buttons are centered and spaced correctly */
+.hover-buttons {
+  display: flex;
+  justify-content: center; /* Center-align buttons */
+  gap: 10px; /* Space between buttons */
+  position: absolute; /* Position absolutely within the product card */
+  bottom: 10px; /* Adjusted space from the bottom of the card */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 30px); /* Full width minus some padding */
+  opacity: 0; /* Hidden by default */
+  visibility: hidden; /* Hidden by default */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 2; /* Ensure it's above other content */
+}
+
+.product-card:hover .hover-buttons {
+  opacity: 1; /* Make buttons visible */
+  visibility: visible; /* Ensure buttons are visible */
+}

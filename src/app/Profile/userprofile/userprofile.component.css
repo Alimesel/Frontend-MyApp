@@ -1,0 +1,176 @@
+/* Global Styles */
+@import "~flag-icons/css/flag-icons.min.css";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to right, #fbc2eb, #a6c0fe);
+  /* removed margin and padding to avoid overflow */
+}
+
+/* Profile Container */
+.profile-container {
+  max-width: 600px;
+  max-width: 100vw; /* Prevent overflow */
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  word-wrap: break-word;
+  box-sizing: border-box; /* Ensure padding included in width */
+}
+
+.profile-container:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Heading */
+.profile-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.profile-container h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #dd8484;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* Form */
+.profile-form {
+  display: grid;
+  gap: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Grid Layout for Fields */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Fields */
+.profile-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-field label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.profile-field input {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-field input:focus {
+  border-color: #ca5535;
+  background-color: #f0f8ff;
+  outline: none;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap; /* allow buttons to wrap on small screens */
+}
+
+.edit-button, .save-button, .cancel-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  flex: 1 1 auto;
+  min-width: 120px;
+  max-width: 200px;
+  box-sizing: border-box;
+}
+
+.edit-button {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #138496;
+  transform: scale(1.05);
+}
+
+.save-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-container {
+    padding: 1rem;
+    margin: 1rem 0.5rem;
+    max-width: 95vw; /* nearly full width on small screens */
+  }
+
+  .profile-form {
+    gap: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .edit-button, .save-button, .cancel-button {
+    max-width: 100%;
+    min-width: auto;
+    flex: none;
+  }
+}

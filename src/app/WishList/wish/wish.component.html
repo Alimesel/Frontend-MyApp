@@ -1,0 +1,38 @@
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<section>
+    <div *ngIf="wishlistitems.length === 0" class="no-products">
+        <!-- No products message -->
+        <p>No products found.</p>
+    </div>
+
+    <div *ngIf="wishlistitems.length > 0" class="product-container">
+        <!-- Product list -->
+        <div *ngFor="let wish of wishlistitems" class="product-card">
+            <!-- Out-of-stock badge -->
+            <div *ngIf="wish.quantity <= 0" class="out-of-stock">Out of Stock</div>
+            <div class="image-container">
+                <img [src]="wish.imageUrl" [alt]="wish.name" />
+            </div>
+            <div class="content">
+                <h4>{{ wish.name }}</h4>
+                <div class="price">{{ wish.price | currency }}</div>
+                <div class="hover-buttons">
+                    <!-- Button for viewing wish -->
+                     <button class="icon-button eye-blink" (click)="showMoreProducts(wish)" aria-label="View Product">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </button> 
+                   
+                    <!-- <button *ngIf="wish.quantity > 0" class="icon-button basket-bounce" (click)="addToCart(wish)" aria-label="Add to Cart">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                    </button> -->
+                    
+                    <button class="icon-button delete-basket" (click)="removeFromWishList(wish.id)" aria-label="Remove from Wishlist">
+                      <span class="material-symbols-outlined">delete</span>
+                  </button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

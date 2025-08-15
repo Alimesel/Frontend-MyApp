@@ -1,0 +1,35 @@
+<div class="login-wrapper">
+  <div class="image-container">
+    <img src="assets/Logo.png" alt="Abbali Logo" />
+  </div>
+  <div class="form-container">
+    <div class="card">
+      <a class="login">Sign In</a>
+      <form [formGroup]="loginform" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <div class="form-field">
+            <input type="text" id="username" name="username" formControlName="username" placeholder=" " />
+            <label for="username">Username</label>
+            <div *ngIf="loginform.get('username')?.invalid && (loginform.get('username')?.touched || formsubmitted)">
+              <small *ngIf="loginform.get('username')?.errors?.['required']">Username is required</small>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-field">
+            <input type="password" id="password" name="password" formControlName="password" placeholder=" " />
+            <label for="password">Password</label>
+            <div *ngIf="loginform.get('password')?.invalid && (loginform.get('password')?.touched || formsubmitted)">
+              <small *ngIf="loginform.get('password')?.errors?.['required']">Password is required</small>
+              <small *ngIf="loginform.get('password')?.errors?.['minlength']">Password Should be at Least 6 Characters</small>
+            </div>
+          </div>
+        </div>
+        <button class="enter">Enter</button>
+      </form>
+      <h5 class="form-footer">
+        Don't have an account? <a [routerLink]="['/register']">Create Account Here</a>
+      </h5>
+    </div>
+  </div>
+</div>
