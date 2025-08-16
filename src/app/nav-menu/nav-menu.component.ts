@@ -5,6 +5,7 @@ import { UserAuthenticationService } from '../Service/user-authentication.servic
 import { ServiceService } from '../Service/service.service';
 import { FilterService } from '../Service/filter.service';
 import { Category } from '../Interfaces/Product';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-nav-menu',
@@ -42,7 +43,7 @@ export class NavMenuComponent implements OnInit {
       next: data => {
         this.categories = data.map(cat => ({
           ...cat,
-          image: `https://localhost:7280/${cat.image}`
+          image: `${environment.apiUrl.replace('/api','')}/${cat.image}`,
         }));
       },
       error: err => console.error('Failed to load categories', err)

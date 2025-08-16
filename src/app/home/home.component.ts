@@ -7,6 +7,7 @@ import { DescriptionService } from '../Service/description.service';
 import { UserAuthenticationService } from '../Service/user-authentication.service';
 import { ServiceService } from '../Service/service.service';
 import { FilterService } from '../Service/filter.service';
+import { environment } from 'src/environments/environment.prod';
 
 interface HomeSection {
   id: number;
@@ -78,10 +79,10 @@ export class HomeComponent implements OnInit, OnDestroy {
           id: section.id,
           title: section.title,
           description: section.description,
-          imageUrl: `https://localhost:7280/${section.imageUrl}`,
-          imageUrl2: `https://localhost:7280/${section.imageUrl2}`,
-          imageUrl3: `https://localhost:7280/${section.imageUrl3}`,
-          imageUrl4: section.imageUrl4 ? `https://localhost:7280/${section.imageUrl4}` : '',
+         imageUrl: `${environment.apiUrl.replace('/api','')}/${section.imageUrl}`,
+        imageUrl2: `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}`,
+        imageUrl3: `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}`,
+         imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl4}` : '',
           displayOrder: section.displayOrder,
           isActive: section.isActive
         }));
@@ -140,7 +141,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.Category = data.map((cat: any) => ({
           ...cat,
-          image: `https://localhost:7280/${cat.image}`,
+          image: `${environment.apiUrl.replace('/api','')}/${cat.image}`,
         }));
       },
       error: (error) => {
@@ -155,7 +156,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.Product = data.map((product: any) => ({
           ...product,
-          imageUrl: `https://localhost:7280/${product.imageUrl}`,
+          imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}`,
         }));
       },
       error: (error) => {

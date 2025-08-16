@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Product, Category } from './../../Interfaces/Product';
-
+import { environment } from 'src/environments/environment.prod';
 import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { DescriptionService } from 'src/app/Service/description.service';
 import { ServiceService } from 'src/app/Service/service.service';
@@ -105,7 +105,7 @@ export class ShowMoreComponent implements OnInit {
         this.RelatedProducts = data.filter(eachproduct => eachproduct.id !== this.Product.id)
           .map(eachproduct => ({
             ...eachproduct,
-            imageUrl: `https://localhost:7280/${eachproduct.imageUrl}`,
+            imageUrl: `${environment.apiUrl.replace('/api','')}/${eachproduct.imageUrl}`,
           }));
       }
     });

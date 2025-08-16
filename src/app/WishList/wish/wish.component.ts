@@ -6,6 +6,7 @@ import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { DescriptionService } from 'src/app/Service/description.service';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-wish',
@@ -32,7 +33,7 @@ export class WishComponent implements OnInit {
     this.wishList = data;
    this.wishlistitems = data.wishlistItems.map(eachitem => ({
   ...eachitem.product,
-  imageUrl: `https://localhost:7280/${eachitem.product.imageUrl}`,
+  imageUrl: `${environment.apiUrl.replace('/api','')}/${eachitem.product.imageUrl}`,
   category: {
     id: (eachitem.product.category as any).categoryID,
     name: (eachitem.product.category as any).categoryName,
