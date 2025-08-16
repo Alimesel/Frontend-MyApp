@@ -8,6 +8,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Router } from '@angular/router';
 import { Cart } from 'src/app/Interfaces/Carts';
 import { DescriptionService } from 'src/app/Service/description.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-cart',
@@ -40,7 +41,7 @@ export class CartComponent implements OnInit {
             ...ci.products,
             quantity: ci.quantity,
             selectedSize : ci.size,
-            imageUrl: `https://localhost:7280/${ci.products.imageUrl}`
+            imageUrl: `${environment.apiUrl.replace('/api','')}/${ci.products.imageUrl}`
           }));
           this.CartSer.updateCartCount().subscribe();
         },
