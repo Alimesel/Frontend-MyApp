@@ -32,11 +32,19 @@ export class ServiceService {
   }
 
   GetProducts(categoryid?: number, searchTerm?: string): Observable<Product[]> {
-    let params = new HttpParams();
-    if (categoryid) params = params.set("categoryid", categoryid.toString());
-    if (searchTerm) params = params.set("searchTerm", searchTerm);
-    return this.http.get<Product[]>(this.ProductsAPI, { params });
+  let params = new HttpParams();
+
+  if (categoryid !== undefined && categoryid !== null) {
+    params = params.set("categoryId", categoryid.toString());
   }
+
+  // Only add searchTerm if it has a non-empty value
+  if (searchTerm && searchTerm.trim() !== '') {
+    params = params.set("searchTerm", searchTerm.trim());
+  }
+
+  return this.http.get<Product[]>(this.ProductsAPI, { params });
+}
 
   GetCategory(): Observable<Category[]> {
     return this.http.get<Category[]>(this.CategoryAPI);

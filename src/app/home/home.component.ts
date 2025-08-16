@@ -151,20 +151,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadProducts(categoryID?: number, search?: string) {
-    this.Service.GetProducts(categoryID, search).subscribe({
-      next: (data) => {
-        this.Product = data.map((product: any) => ({
-          ...product,
-          imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}`,
-        }));
-      },
-      error: (error) => {
-        this.error = 'Failed to load products';
-        console.error(error);
-      },
-    });
-  }
+ loadProducts(categoryID?: number, search?: string) {
+  // Only pass searchTerm if it is non-empty
+  const searchTerm = search?.trim() ? search.trim() : undefined;
+
+  this.Service.GetProducts(categoryID, searchTerm).subscribe({
+    next: (data) => {
+      this.Product = data.map((product: any) => ({
+        ...product,
+        imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}`,
+      }));
+    },
+    error: (error) => {
+      this.error = 'Failed to load products';
+      console.error(error);
+    },
+  });
+}
 
   addToCart(Product: Product) {
     if (!Product.selectedSize) {
