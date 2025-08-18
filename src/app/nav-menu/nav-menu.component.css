@@ -187,26 +187,26 @@
   }
 
   /* Center links shrink and stay in one row */
-  .navbar-center {
+.navbar-center {
     order: 2;
-    flex: 2;
-    justify-content: space-around;
-    gap: 2px;
+    flex: 1; /* let it take remaining space naturally */
+    justify-content: space-around; /* evenly distribute */
+    gap: 5px; /* bigger spacing between links */
     margin: 0;
     font-size: 0.7rem;
   }
 
- .nav-link {
-  font-size: 0.7rem;
+  .nav-link {
+    font-size: 0.7rem;
+    text-decoration: none; /* remove underline */
+    padding: 2px 4px; /* add a little padding */
+    transition: color 0.2s ease;
+  }
 
-  text-decoration: none; /* remove underline */
-  padding: 2px 1px;
-  
-  transition: color 0.2s ease; /* optional smooth hover */
-}
-.nav-link:hover {
-  text-decoration: none; /* remove underline on hover */
-  color: #222; /* optional hover color */
+  .nav-link:hover {
+    text-decoration: none;
+    color: #222;
+  }
 }
   /* Right section */
   .navbar-right {
@@ -229,8 +229,8 @@
 
   /* Logo slightly smaller */
   .brand img {
-    width: 80px;
-    height: 70px;
+    width: 70px;
+    height: 65px;
     transform: translateY(5px); /* move down 5px */
 
   }
@@ -239,4 +239,3 @@
     font-size: 0.65rem;
     padding: 2px 6px;
   }
-}
