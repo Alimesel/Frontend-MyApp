@@ -28,13 +28,13 @@ main.container {
 
 @media (max-width: 1800px) {
   main.container {
-    padding-top: 70px;
+    padding-top: 60px;
   }
 }
 
 @media (max-width: 480px) {
   main.container {
-    padding-top: 110px;
+    padding-top: 55px;
   }
 }
 
