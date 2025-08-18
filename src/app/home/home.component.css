@@ -1,4 +1,5 @@
 /* ========== GLOBAL STYLES ========== */
+
 .home-container {
   width: 100%;
   max-width: 100%;
@@ -451,7 +452,7 @@
   background: #e74c3c;
   color: white;
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 0.8rem;
   font-weight: bold;
   z-index: 5;
