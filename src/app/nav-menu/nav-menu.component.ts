@@ -16,8 +16,7 @@ export class NavMenuComponent implements OnInit {
   TotalItems = 0;
   isAuthenticated = false;
 
-  categories: Category[] = [];
-  selectedCategoryId?: number;
+
   searchTerm = '';
   userDropdownOpen = false;
 
@@ -31,55 +30,19 @@ export class NavMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTotalItems();
-    this.loadCategories();
     this.UserAuth.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
       if (isAuth) this.getTotalItems();
     });
   }
 
-  loadCategories() {
-    this.Service.GetCategory().subscribe({
-      next: data => {
-        this.categories = data.map(cat => ({
-          ...cat,
-          image: `${environment.apiUrl.replace('/api','')}/${cat.image}`,
-        }));
-      },
-      error: err => console.error('Failed to load categories', err)
-    });
-  }
-
+ 
   getTotalItems() {
     this.CartSer.updateCartCount().subscribe();
     this.CartSer.cartitem$.subscribe(count => this.TotalItems = count);
   }
 
-  onCategoryChange(categoryId: number | null) {
-    this.selectedCategoryId = categoryId || undefined;
-    this.emitFilterChange();
-    setTimeout(() => {
-    const section = document.getElementById('products-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, 200);
-  }
 
-  onSearchChange() {
-    this.emitFilterChange();
-    const section = document.getElementById('products-section');
-    if(section){
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  emitFilterChange() {
-    this.filterService.updateFilter({
-      categoryId: this.selectedCategoryId,
-      searchTerm: this.searchTerm
-    });
-  }
 
   toggleUserDropdown() {
     this.userDropdownOpen = !this.userDropdownOpen;
@@ -92,18 +55,6 @@ export class NavMenuComponent implements OnInit {
       this.router.navigate(['/home']);
     }
   }
-
-  // Fix for event typing issue on mobile category dropdown
- onMobileCategoryChange(event: Event): void {
-  const select = event.target as HTMLSelectElement;
-  const value = select.value;
-  this.selectedCategoryId = value ? +value : undefined;
-  this.emitFilterChange();
-  const section = document.getElementById('products-section')
-  if(section){
-    section.scrollIntoView({behavior: 'smooth'})
-  }
-}
 goToContact(){
   if(this.router.url === '/home'){
     document.getElementById('footer')?.scrollIntoView({behavior : 'smooth'})
@@ -112,4 +63,5 @@ goToContact(){
     this.router.navigate(['/home'],{state:{scrollToFooter : true}});
   }
 }
+
 }

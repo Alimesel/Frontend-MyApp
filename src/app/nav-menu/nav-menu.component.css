@@ -1,147 +1,48 @@
-/* Navbar Container */
-.brand img {
-  width: 80px; /* adjust as needed */
-  height: auto;
-  display: block;
-}
-
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: white; /* keep white background */
+  background-color: rgba(255, 255, 255, 0.95);
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  padding: 5px 15px;
 }
 
-/* Flex container inside navbar */
+/* Flex container */
 .container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   max-width: 1400px;
-  padding: 10px 20px;
+  margin: 0 auto;
+  height: 50px;
+  gap: 10px;
+}
+
+/* Logo */
+.brand img {
+  width: 60px;
+  height: auto;
+}
+
+/* Center links */
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   margin: 0 auto;
 }
 
-/* Left Section */
-.navbar-left {
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-}
-
-.brand {
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -1px;
-  text-decoration: none;
-  color: #daac15;
-  margin-bottom: 8px;
-}
-
-/* Categories */
-.categories-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 25px;
-}
-
-.nav-categories {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 25px;
-}
-
-.nav-categories li {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 5px 0;
-  position: relative;
-  letter-spacing: 0.5px;
-  color: black; /* black text */
-}
-
-.nav-categories li.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: black; /* black underline */
-}
-
-/* Mobile Categories Dropdown */
-.mobile-only {
-  display: none;
-  margin-top: 5px;
-}
-
-.category-select {
-  width: 100%;
-  padding: 6px 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Center Section - Search */
-.navbar-center {
-  width: 30%;
-  display: flex;
-  justify-content: center;
-  padding-top: 12px;
-}
-
-.navbar-center input {
-  width: 100%;
-  max-width: 300px;
-  border: none;
-  border-bottom: 1px solid black;
-  padding: 8px 5px;
-  outline: none;
-  background: transparent;
-  font-size: 0.9rem;
-  text-align: center;
-  letter-spacing: 0.5px;
-  color: black; /* black text */
-}
-
-.navbar-center input::placeholder {
-  color: #555;
-}
-
-/* Right Section - Links + Icons */
-.navbar-right {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 30%;
-  gap: 15px;
-  padding-top: 8px;
-  flex-wrap: nowrap;
-}
-
-.extra-links {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-right: 10px;
-}
-
 .nav-link {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  color: black; /* black links */
+  color: black;
   text-decoration: none;
-  padding: 0 5px;
+  padding: 2px 4px;
   white-space: nowrap;
 }
 
@@ -150,30 +51,36 @@
   color: #222;
 }
 
-/* Icons - white color with black stroke */
-.icon-link,
-.user-dropdown,
-.connect-btn {
+/* Right section */
+.navbar-right {
   display: flex;
-  position: relative;
-  text-decoration: none;
-  color: white; /* white icons */
-  align-items: center;
-  cursor: pointer;
+  align-items: center; /* vertically center all icons */
+  gap: 10px;
 }
 
+/* Make all icon containers same size and inline-flex */
+.icon-link,
+.basket-container,
+.user-dropdown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  position: relative;
+}
+
+/* Icons inside containers */
 .icon-link i,
 .user-dropdown i {
-  font-size: 20px;
+  font-size: 18px;
   color: white;
   -webkit-text-stroke: 1.5px black;
   text-stroke: 1.5px black;
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
   transition: color 0.2s ease;
 }
 
+/* Hover effect */
 .icon-link:hover i,
 .user-dropdown:hover i {
   color: #eee;
@@ -181,17 +88,17 @@
   text-stroke: 1.8px black;
 }
 
-/* Basket number badge */
-.badge {
+/* Basket badge */
+.basket-container .badge {
   position: absolute;
-  top: -5px;
-  right: -8px;
+  top: -4px;
+  right: -4px;
   background: #f44336;
   color: white;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -199,69 +106,69 @@
   pointer-events: none;
 }
 
-/* User Dropdown */
+/* User dropdown menu */
 .user-dropdown {
-  position: relative;
+  cursor: pointer;
 }
 
-.dropdown-menu {
+.user-dropdown .dropdown-menu {
   position: absolute;
-  top: 110%;
+  top: 100%;
   right: 0;
   background: white;
-  list-style: none;
-  padding: 10px 0;
-  margin: 5px 0 0;
-  min-width: 150px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 120px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  display: none;
   z-index: 1001;
+  padding: 5px 0;
 }
 
-.dropdown-menu.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+.user-dropdown .dropdown-menu.show {
+  display: block;
 }
 
-.dropdown-menu li {
-  padding: 8px 20px;
-  font-size: 0.9rem;
-  color: black;
+.user-dropdown .dropdown-menu li {
+  list-style: none;
 }
 
-.dropdown-menu li:hover {
-  background-color: #f9f9f9;
-}
-
-.dropdown-menu a,
-.dropdown-menu button {
-  color: black;
-  text-decoration: none;
+.user-dropdown .dropdown-menu li a,
+.user-dropdown .dropdown-menu li button {
   display: block;
   width: 100%;
-  background: none;
+  padding: 6px 10px;
+  color: black;
+  background: transparent;
   border: none;
-  cursor: pointer;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-/* Connect Button */
+.user-dropdown .dropdown-menu li a:hover,
+.user-dropdown .dropdown-menu li button:hover,
+.user-dropdown .dropdown-menu li a:focus,
+.user-dropdown .dropdown-menu li button:focus {
+  background-color: #007bff; /* blue on hover/focus */
+  color: white;
+  outline: none;
+}
+
+/* Connect button */
 .connect-btn {
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 1px;
-  padding: 8px 15px;
+  padding: 4px 10px;
   border: 1px solid black;
   border-radius: 20px;
   transition: all 0.3s ease;
   user-select: none;
   color: black;
   background: transparent;
+  text-decoration: none;
 }
 
 .connect-btn:hover {
@@ -269,54 +176,55 @@
   color: white;
 }
 
-/* Responsive */
-@media (max-width: 992px) {
+/* ========== RESPONSIVE ========== */
+@media (max-width: 576px) {
   .container {
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: nowrap;
+    height: 45px; /* smaller navbar height */
+    padding: 5px 10px;
   }
 
-  .navbar-left,
-  .navbar-center,
-  .navbar-right {
-    width: 100%;
-    justify-content: center;
-    padding: 10px 0;
-  }
-
-  .categories-row {
-    display: none; /* hide desktop categories on mobile */
-  }
-
-  .mobile-only {
-    display: block;
-    width: 100%;
-    max-width: 320px;
-    margin-top: 5px;
-  }
-
-  .category-select {
-    width: 100%;
-    padding: 6px 10px;
-    font-size: 1rem;
-    border-radius: 6px;
-  }
-
+  /* Center links shrink and stay in one row */
   .navbar-center {
-    padding-top: 10px;
     order: 2;
+    flex: 1;
+    justify-content: space-around;
+    gap: 5px;
+    margin: 0;
+    font-size: 0.7rem;
   }
 
+  .nav-link {
+    font-size: 0.65rem;
+    padding: 2px 3px;
+  }
+
+  /* Right section */
   .navbar-right {
-    padding-top: 15px;
-    gap: 10px;
-    flex-wrap: wrap;
     order: 3;
+    gap: 6px;
   }
 
-  .extra-links {
-    justify-content: center;
-    width: 100%;
-    margin: 0 0 10px 0;
+  /* Icons smaller on mobile but still visible */
+  .icon-link,
+  .basket-container,
+  .user-dropdown {
+    width: 32px;
+    height: 32px;
+  }
+
+  .icon-link i,
+  .user-dropdown i {
+    font-size: 16px;
+  }
+
+  /* Logo slightly smaller */
+  .brand img {
+    width: 50px;
+  }
+
+  .connect-btn {
+    font-size: 0.65rem;
+    padding: 2px 6px;
   }
 }

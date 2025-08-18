@@ -1,18 +1,23 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-<!-- Wrap the slider section OUTSIDE the container to get true full width -->
+<!-- HERO SECTION -->
 <section *ngFor="let section of filteredHeroSections" class="hero-section">
   <div class="slider-container" *ngIf="getActiveSlides(section).length > 0">
     <div class="slider-track" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'">
       <div class="slide" *ngFor="let imgUrl of getActiveSlides(section)">
-        <img [src]="imgUrl" [alt]="section.title" class="slide-image" />
+        <img [src]="imgUrl" [alt]="section.description" class="slide-image" />
+        <div class="hero-content" *ngIf="currentSlideIndex === getActiveSlides(section).indexOf(imgUrl)">
+          <div class="animated-text">{{animatedText}}</div>
+          <div class="hero-subtitle">{{section.description}}</div>
+          <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
+        </div>
       </div>
     </div>
 
-    <button class="slider-nav prev" (click)="prevSlide()">
+    <button class="slider-nav left" (click)="prevSlide()">
       <span class="material-symbols-outlined">chevron_left</span>
     </button>
-    <button class="slider-nav next" (click)="nextSlide()">
+    <button class="slider-nav right" (click)="nextSlide()">
       <span class="material-symbols-outlined">chevron_right</span>
     </button>
 
@@ -24,72 +29,79 @@
   </div>
 </section>
 
-<!-- Main content container -->
+<!-- MAIN CONTENT -->
 <div class="home-container">
 
-  <!-- Separate Category Sections -->
-  <section *ngFor="let section of filteredOtherSections" class="category-section">
-    <div class="section-header">
-      <h2 class="section-title">{{section.title}}</h2>
-      <p class="section-description">{{section.description}}</p>
-    </div>
+  <!-- CATEGORY SECTIONS (SHOES & ACCESSORIES) -->
+  <div class="category-sections-wrapper">
+    <ng-container *ngFor="let section of filteredOtherSections">
+      <div class="category-section">
+        <div class="category-image-wrapper">
+          <img [src]="section.imageUrl" [alt]="section.description" class="category-image" />
+          <div class="image-overlay">
+            <button class="overlay-btn" (click)="scrollToProducts()">explore {{section.description}}</button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 
-    <div class="category-images">
-      <div class="category-image-wrapper" *ngIf="section.imageUrl">
-        <img [src]="section.imageUrl" alt="{{section.title}}" class="category-image" />
-      </div>
-      <div class="category-image-wrapper" *ngIf="section.imageUrl2">
-        <img [src]="section.imageUrl2" alt="{{section.title}} 2" class="category-image" />
-      </div>
-      <div class="category-image-wrapper" *ngIf="section.imageUrl3">
-        <img [src]="section.imageUrl3" alt="{{section.title}} 3" class="category-image" />
-      </div>
-      <div class="category-image-wrapper" *ngIf="section.imageUrl4">
-        <img [src]="section.imageUrl4" alt="{{section.title}} 4" class="category-image" />
-      </div>
-    </div>
-  </section>
-
-  <!-- Products Section with heading & separator -->
+  <!-- PRODUCTS SECTION -->
   <section class="products-section" id="products-section">
     <div class="products-header">
       <h2>Our Featured Products</h2>
       <hr class="section-separator" />
     </div>
 
-    <div *ngIf="error" class="error">
-      {{ error }}
+    <!-- 🔎 CATEGORY + SEARCH FILTERS -->
+    <div class="filter-bar">
+      <!-- Category dropdown -->
+      <div class="dropup">
+        <select (change)="onCategoryChange($event)" [ngClass]="{'selected': selectedCategoryId}">
+          <option value="">All Categories</option>
+          <option *ngFor="let cat of Category" [value]="cat.id" [ngClass]="{'red-text': selectedCategoryId === cat.id}">
+            {{cat.name}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Search input -->
+      <div class="Search-input">
+        <input
+          type="search"
+          placeholder="Search products..."
+          [(ngModel)]="searchTerm"
+          (keyup)="onSearch()"
+          aria-label="Search products"
+        />
+      </div>
     </div>
 
+    <div *ngIf="error" class="error">{{ error }}</div>
     <div *ngIf="Product.length === 0" class="no-products">
       <p>No products found.</p>
     </div>
 
     <div *ngIf="Product.length > 0" class="product-container">
       <div *ngFor="let product of Product" class="product-card">
-        <div *ngIf="product.quantity <= 0" class="out-of-stock">Out of Stock</div>
+        <div class="out-of-stock" *ngIf="product.quantity <= 0">Out of Stock</div>
+        
+        <button class="wishlist-btn" (click)="addToWishlist(product.id)">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+
         <div class="image-container">
           <img [src]="product.imageUrl" [alt]="product.name" />
         </div>
+        
         <div class="content">
-          <h4>{{ product.name }}</h4>
-          <div class="price">{{ product.price | currency }}</div>
-          <div class="hover-buttons">
-            <button class="icon-button eye-blink" (click)="showMoreProducts(product)" aria-label="View Product">
-              <span class="material-symbols-outlined">visibility</span>
-            </button>
-            <button class="icon-button heart-beat" (click)="addToWishlist(product.id)" aria-label="Add to Wishlist">
-              <span class="material-symbols-outlined">favorite</span>
-            </button>
-            <!-- Uncomment if needed -->
-            <!-- <button *ngIf="product.quantity > 0" class="icon-button basket-bounce" (click)="addToCart(product)" aria-label="Add to Cart">
-              <span class="material-symbols-outlined">shopping_cart</span>
-            </button> -->
-          </div>
+          <h4>{{product.name}}</h4>
+          <div class="price">{{product.price | currency}}</div>
+          <button class="see-more-btn" (click)="showMoreProducts(product)">See More</button>
         </div>
       </div>
     </div>
   </section>
-
 </div>
+
 <app-footer></app-footer>
