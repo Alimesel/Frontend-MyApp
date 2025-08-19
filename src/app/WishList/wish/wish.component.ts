@@ -30,19 +30,26 @@ export class WishComponent implements OnInit {
   }
   GetWishListItems() {
   this.Service.GetWishListItems().subscribe(data => {
-    this.wishList = data;
-   this.wishlistitems = data.wishlistItems.map(eachitem => ({
-  ...eachitem.product,
-  imageUrl: `${environment.apiUrl.replace('/api','')}/${eachitem.product.imageUrl}`,
-  category: {
-    id: (eachitem.product.category as any).categoryID,
-    name: (eachitem.product.category as any).categoryName,
-    image: (eachitem.product.category as any).categoryImage
-  }
-}));
+    // Handle backend response when wishlist is empty
+    if (!data || !('wishlistItems' in data) || !data.wishlistItems) {
+      this.wishList = null;
+      this.wishlistitems = [];
+      return;
+    }
 
+    this.wishList = data;
+    this.wishlistitems = data.wishlistItems.map(eachitem => ({
+      ...eachitem.product,
+      imageUrl: `${environment.apiUrl.replace('/api','')}/${eachitem.product.imageUrl}`,
+      category: {
+        id: (eachitem.product.category as any).categoryID,
+        name: (eachitem.product.category as any).categoryName,
+        image: (eachitem.product.category as any).categoryImage
+      }
+    }));
   });
 }
+
 
   GetUserId(){
    this.userid = JSON.parse(localStorage.getItem('userid') || '');
