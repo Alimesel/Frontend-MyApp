@@ -1,32 +1,42 @@
 <div *ngIf="orders; else noOrders" class="order-history">
+  <!-- Floating particles container -->
+  <div class="particles"></div>
+
+  <!-- Order Header -->
   <header class="order-header">
-    <h2 class="order-id">Order #{{ orders.orderId }}</h2>
-    <time class="order-date" [attr.datetime]="orders.createdAt">
-      {{ orders.createdAt | date: 'medium' }}
-    </time>
-    <div class="order-total">
-      Total Paid: <span>${{ formatPrice(orders.totalAmount) }}</span>
+    <div class="order-info">
+      <h1>Order #{{ orders.orderId }}</h1>
+      <p>Placed on {{ orders.createdAt | date: 'mediumDate' }}</p>
+    </div>
+    <div class="order-summary">
+      <div class="total-wrapper">
+        <span>Total Paid</span>
+        <strong>${{ formatPrice(orders.totalAmount) }}</strong>
+      </div>
     </div>
   </header>
 
-  <div class="order-details">
-    <table>
-     
-      <tbody>
-        <tr *ngFor="let item of orders.orderDetails">
-          <td class="product-name">{{ item.name }}</td>
-          <td>
-            <img [src]="item.imageUrl" alt="{{ item.name }}" />
-          </td>
-          <td>{{ item.quantity }}</td>
-          <td>${{ formatPrice(item.price) }}</td>
-          <td>{{ item.size }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- Product List -->
+  <ul class="order-items">
+    <li *ngFor="let item of orders.orderDetails" class="order-item">
+      <div class="item-left">
+        <img [src]="item.imageUrl" alt="{{ item.name }}" />
+        <div class="item-details">
+          <p class="item-name">{{ item.name }}</p>
+          <p class="item-size">Size: {{ item.size }}</p>
+        </div>
+      </div>
+      <div class="item-right">
+        <p class="item-quantity">Qty: {{ item.quantity }}</p>
+        <p class="item-price">${{ formatPrice(item.price) }}</p>
+      </div>
+    </li>
+  </ul>
 </div>
 
 <ng-template #noOrders>
-  <p class="no-orders">You haven’t placed any orders yet.</p>
+  <div class="no-orders">
+    <p>You haven’t placed any orders yet.</p>
+    <span class="emoji">🕊️</span>
+  </div>
 </ng-template>

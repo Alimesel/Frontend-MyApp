@@ -1,129 +1,221 @@
-/* Global box-sizing */
-*, *::before, *::after {
-  box-sizing: border-box;
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
 }
 
-/* Base styles for container */
-.container {
-  background: linear-gradient(135deg, #ffffff, #f7f7f7);
-  padding: 40px 30px;
+.main-content {
+  width: 100%;
+  position: relative;
+  z-index: 5;
+}
+
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  max-width: 500px;
-  width: 90%;
-  margin: 0 auto;
-  animation: popIn 0.5s ease-out;
   text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  animation: floatUp 1.2s ease forwards;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  z-index: 20;
 }
 
-/* Headline */
-.container h2 {
+.success-title {
   font-size: 2rem;
-  color: #28a745;
-  font-weight: bold;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
+  color: #2ecc71;
+  margin-top: 20px;
+  animation: fadeIn 1.2s ease forwards;
 }
 
-/* Paragraph */
-.container p {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 25px;
+.success-message {
+  color: #333;
+  margin: 15px 0 25px;
+  font-size: 1rem;
+  animation: fadeIn 1.5s ease forwards;
 }
 
 /* Button */
-.btn-primary {
-  background: linear-gradient(90deg, #28a745, #218838);
+.btn-home {
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  color: #fff;
   border: none;
-  padding: 14px 30px;
-  font-size: 1.1rem;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-home::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.4);
+  transform: skewX(-25deg);
+}
+
+.btn-home:hover::before {
+  animation: shine 0.8s forwards;
+}
+
+.btn-home:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(46, 204, 113, 0.5);
+}
+
+/* Checkmark */
+.checkmark-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.checkmark-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   display: inline-block;
+  border: 6px solid #2ecc71;
+  position: relative;
+  animation: scaleIn 0.6s ease-out forwards;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(90deg, #218838, #1e7e34);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+.pulse {
+  animation: pulse 1.8s infinite;
 }
 
-/* PopIn animation */
-@keyframes popIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+.checkmark-stem {
+  position: absolute;
+  width: 6px;
+  height: 35px;
+  background-color: #2ecc71;
+  left: 33px;
+  top: 22px;
+  transform: rotate(45deg);
+  animation: drawStem 0.5s ease forwards 0.6s;
+  opacity: 0;
 }
 
-/* Prevent horizontal scrolling globally */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: Arial, sans-serif;
+.checkmark-kick {
+  position: absolute;
+  width: 6px;
+  height: 20px;
+  background-color: #2ecc71;
+  left: 22px;
+  top: 42px;
+  transform: rotate(-45deg);
+  animation: drawKick 0.5s ease forwards 0.9s;
+  opacity: 0;
 }
 
-/* --- Responsive styles --- */
-
-/* For mobile phones (up to 480px) */
-@media (max-width: 480px) {
-  .container {
-    padding: 25px 20px;
-    border-radius: 15px;
-    max-width: 95%;
-  }
-  .container h2 {
-    font-size: 1.5rem;
-  }
-  .container p {
-    font-size: 1rem;
-  }
-  .btn-primary {
-    padding: 12px 22px;
-    font-size: 1rem;
-  }
+/* Cosmic Background (Pure CSS Stars) */
+.stars, .twinkling, .sparkles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: block;
+  z-index: 0;
 }
 
-/* For tablets and small laptops (481px to 1024px) */
-@media (min-width: 481px) and (max-width: 1024px) {
-  .container {
-    padding: 35px 30px;
-    max-width: 450px;
-  }
-  .container h2 {
-    font-size: 1.75rem;
-  }
-  .container p {
-    font-size: 1.05rem;
-  }
-  .btn-primary {
-    padding: 13px 25px;
-    font-size: 1.05rem;
-  }
+
+
+/* Twinkling effect */
+.twinkling {
+  background: transparent;
+  box-shadow:
+    100px 200px 1px white,
+    200px 400px 1px white,
+    300px 100px 1px white,
+    400px 300px 1px white,
+    500px 250px 1px white;
+  animation: twinkle 2s infinite alternate;
 }
 
-/* For larger laptops and desktops (above 1024px) */
-@media (min-width: 1025px) {
-  .container {
-    padding: 50px 40px;
-    max-width: 500px;
-  }
-  .container h2 {
-    font-size: 2rem;
-  }
-  .container p {
-    font-size: 1.1rem;
-  }
-  .btn-primary {
-    padding: 14px 30px;
-    font-size: 1.1rem;
-  }
+/* Sparkles floating */
+.sparkles {
+  background: transparent;
+  box-shadow:
+    150px 150px 2px white,
+    250px 350px 2px white,
+    350px 50px 2px white,
+    450px 400px 2px white,
+    550px 200px 2px white;
+  animation: floatSparkles 8s ease-in-out infinite alternate;
+}
+
+/* Confetti */
+#confetti-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Animations */
+@keyframes floatUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes drawStem {
+  to { opacity: 1; }
+}
+
+@keyframes drawKick {
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(46,204,113,0.7); }
+  70% { transform: scale(1.08); box-shadow: 0 0 25px rgba(46,204,113,0.4); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(46,204,113,0.7); }
+}
+
+@keyframes shine {
+  to { left: 200%; }
+}
+
+@keyframes moveStars {
+  0% { background-position: 0 0; }
+  100% { background-position: 10000px 10000px; }
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+@keyframes floatSparkles {
+  0% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-20px) translateX(10px); }
+  100% { transform: translateY(0px) translateX(0px); }
 }

@@ -1,7 +1,25 @@
 <main class="main-content">
-  <div class="container">
-    <h2>🎉 Payment Successful!</h2>
-    <p>Thank you for your purchase.</p>
-    <button class="btn btn-primary" (click)="GoHome()">Order History</button>
+  <div class="success-container">
+    <div class="success-card">
+      <div class="checkmark-wrapper">
+        <div class="checkmark-circle pulse">
+          <div class="checkmark-stem"></div>
+          <div class="checkmark-kick"></div>
+        </div>
+      </div>
+      <h2 class="success-title">🎉 Payment Successful!</h2>
+      <p class="success-message">
+        Thank you for your purchase. Your order is on the way 🚀
+      </p>
+      <button class="btn-home" (click)="GoHome()">Go to Order History</button>
+    </div>
   </div>
+
+  <!-- Cosmic Stars & Sparkles -->
+  <div class="stars"></div>
+  <div class="twinkling"></div>
+  <div class="sparkles"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
 </main>
