@@ -1,35 +1,80 @@
-<div class="login-wrapper">
-  <div class="image-container">
-    <img src="assets/Logo.png" alt="Abbali Logo" />
-  </div>
-  <div class="form-container">
-    <div class="card">
-      <a class="login">Sign In</a>
-      <form [formGroup]="loginform" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <div class="form-field">
-            <input type="text" id="username" name="username" formControlName="username" placeholder=" " />
-            <label for="username">Username</label>
-            <div *ngIf="loginform.get('username')?.invalid && (loginform.get('username')?.touched || formsubmitted)">
-              <small *ngIf="loginform.get('username')?.errors?.['required']">Username is required</small>
+<div class="login-wrap">
+  <div class="login-html">
+    <!-- Tabs -->
+    <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
+    <label for="tab-1" class="tab">Sign In</label>
+
+    <input id="tab-2" type="radio" name="tab" class="sign-up">
+    <label for="tab-2" class="tab">Sign Up</label>
+
+    <div class="login-form">
+      <!-- LOGIN FORM -->
+      <div class="sign-in-htm">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          <div class="group">
+            <label for="login-username" class="label">Username</label>
+            <input id="login-username" type="text" class="input" formControlName="username">
+          </div>
+          <div class="group">
+            <label for="login-password" class="label">Password</label>
+            <input id="login-password" type="password" class="input" formControlName="password">
+          </div>
+          <div class="group">
+            <input id="check" type="checkbox" class="check" checked>
+            <label for="check"><span class="icon"></span> Keep me Signed in</label>
+          </div>
+          <div class="group">
+            <input type="submit" class="button" value="Sign In">
+          </div>
+        </form>
+        <div class="hr"></div>
+        <div class="foot-lnk">
+          <a href="#">Forgot Password?</a>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="sign-up-htm">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+          <div class="register-grid">
+            <div class="group">
+              <label class="label">First Name</label>
+              <input type="text" class="input" formControlName="firstname">
+            </div>
+            <div class="group">
+              <label class="label">Last Name</label>
+              <input type="text" class="input" formControlName="lastname">
+            </div>
+            <div class="group">
+              <label class="label">Username</label>
+              <input type="text" class="input" formControlName="username">
+            </div>
+            <div class="group">
+              <label class="label">Email</label>
+              <input type="email" class="input" formControlName="Email">
+            </div>
+            <div class="group">
+              <label class="label">Password</label>
+              <input type="password" class="input" formControlName="Password">
+            </div>
+            <div class="group">
+              <label class="label">Phone Number</label>
+              <input type="text" class="input" formControlName="PhoneNumber">
+            </div>
+            <div class="group">
+              <label class="label">Country</label>
+              <input type="text" class="input" formControlName="Country">
+            </div>
+            <div class="group">
+              <label class="label">City</label>
+              <input type="text" class="input" formControlName="City">
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <div class="form-field">
-            <input type="password" id="password" name="password" formControlName="password" placeholder=" " />
-            <label for="password">Password</label>
-            <div *ngIf="loginform.get('password')?.invalid && (loginform.get('password')?.touched || formsubmitted)">
-              <small *ngIf="loginform.get('password')?.errors?.['required']">Password is required</small>
-              <small *ngIf="loginform.get('password')?.errors?.['minlength']">Password Should be at Least 6 Characters</small>
-            </div>
+          <div class="group">
+            <input type="submit" class="button" value="Sign Up">
           </div>
-        </div>
-        <button class="enter">Enter</button>
-      </form>
-      <h5 class="form-footer">
-        Don't have an account? <a [routerLink]="['/register']">Create Account Here</a>
-      </h5>
+        </form>
+      </div>
     </div>
   </div>
 </div>

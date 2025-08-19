@@ -12,8 +12,7 @@ import { Orders } from '../Interfaces/Orders';
   providedIn: 'root'
 })
 export class ServiceService {
-  private LoginAPI = `${environment.apiUrl}/users/Login`;
-  private RegisterAPI = `${environment.apiUrl}/users/Register`;
+  private UserAPI = `${environment.apiUrl}/users`;
   private profileup = `${environment.apiUrl}/users/update`;
   private ProductsAPI = `${environment.apiUrl}/products/products`;
   private CategoryAPI = `${environment.apiUrl}/products/category`;
@@ -24,11 +23,11 @@ export class ServiceService {
   constructor(private http: HttpClient, private UserAuth: UserAuthenticationService) { }
 
   UserLogin(user: LoginUser): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(this.LoginAPI, user);
+    return this.http.post<{ token: string }>(`${this.UserAPI}/login`, user);
   }
 
   UserRegister(user: UserDTO): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(this.RegisterAPI, user);
+    return this.http.post<{ token: string }>(`${this.UserAPI}/register`, user);
   }
 
   GetProducts(categoryid?: number, searchTerm?: string): Observable<Product[]> {

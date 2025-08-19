@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './Login/login/login.component';
-import { RegisterComponent } from './Register/register/register.component';
 import { ServiceService } from './Service/service.service';
 import { UserprofileComponent } from './Profile/userprofile/userprofile.component';
 import { CartComponent } from './Cart/cart/cart.component';
@@ -26,7 +25,6 @@ import { AboutComponent } from './about/about.component';
     NavMenuComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent,
     UserprofileComponent,
     CartComponent,
     ShowMoreComponent,
@@ -52,7 +50,6 @@ import { AboutComponent } from './about/about.component';
       {path : '', redirectTo : 'home',  pathMatch: 'full', title : 'Products'},
       { path: 'home', component: HomeComponent, title: 'Products'  },
       {path : 'login', component : LoginComponent, title : 'Login'},
-      {path : 'register', component : RegisterComponent, title : 'Regiter'},
       {path : 'profile', component : UserprofileComponent, title : 'Profile'},
       {path : 'cart', component : CartComponent, title : 'Cart'},
       {path : 'product-description', component : ShowMoreComponent, title: 'Product-Details'},
