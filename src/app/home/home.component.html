@@ -77,10 +77,15 @@
       </div>
     </div>
 
-    <div *ngIf="error" class="error">{{ error }}</div>
-    <div *ngIf="Product.length === 0" class="no-products">
-      <p>No products found.</p>
-    </div>
+   <div *ngIf="Product.length === 0" class="no-products">
+  <div class="no-products-content">
+    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Products" />
+    <h3>No products found</h3>
+    <p>We couldn’t find any products matching your search or selected category.</p>
+    <button class="back-btn" (click)="loadProducts()">Browse All Products</button>
+  </div>
+</div>
+
 
     <div *ngIf="Product.length > 0" class="product-container">
       <div *ngFor="let product of Product" class="product-card">

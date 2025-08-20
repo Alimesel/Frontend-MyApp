@@ -6,6 +6,9 @@
   width: 100%;
   position: relative;
   bottom: 0;
+
+  /* New line: top border */
+  border-top: 4px solid #f5c2b9; /* orange color */
 }
 
 .footer-container {
