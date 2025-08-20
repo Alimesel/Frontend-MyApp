@@ -72,6 +72,18 @@ export class CartserviceService {
       );
     }
   }
+  addMultipleServerCart(cartItems: Product[]): Observable<any> {
+  const payload = cartItems.map(item => ({
+    ProductId: item.id,
+    Quantity: item.quantity,
+    Size: item.selectedSize
+  }));
+
+  return this.http.post<Cart>(`${this.CartApi}/AddMultipleToCart`, payload, {
+    headers: { 'Authorization': `Bearer ${this.userAuth.GetToken()}` }
+  });
+}
+
 
   updateCartCount(): Observable<any> {
     if (this.userAuth.UserAuthenticate()) {

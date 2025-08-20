@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { LoginUser, UserDTO } from 'src/app/Interfaces/User';
+import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
 
@@ -23,7 +24,8 @@ export class LoginComponent implements OnInit {
     private service: ServiceService,
     private userAuth: UserAuthenticationService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private CartSer : CartserviceService
   ) {}
 
   ngOnInit(): void {
@@ -54,12 +56,23 @@ onLogin() {
     this.service.UserLogin(loginUser).subscribe({
       next: (response: { token: string }) => {
         this.userAuth.SetToken(response.token);
+
+        // Merge guest cart
+        const guestCart = this.CartSer.getLocalItems();
+        if (guestCart.length > 0) {
+          this.CartSer.addMultipleServerCart(guestCart).subscribe({
+            next: () => {
+              this.CartSer.ResetCart();
+              this.CartSer.updateCartCount().subscribe();
+            },
+            error: err => console.error('Failed to merge guest cart', err)
+          });
+        }
+
         this.router.navigate(['/home']);
       },
       error: (error) => {
-        // Check if error.error contains the string from backend
         const message = error.error;
-
         if (error.status === 404 && message === 'Username not Found') {
           this.toastr.error('Username not found');
         } else if (error.status === 400 && message === 'Invalid Password') {
@@ -76,22 +89,36 @@ onLogin() {
 
 
   // Register
-  onRegister() {
-    this.registerSubmitted = true;
-    if (this.registerForm.valid) {
-      const registerUser: UserDTO = this.registerForm.value;
-      this.service.UserRegister(registerUser).subscribe({
-        next: (response: { token: string }) => {
-          this.userAuth.SetToken(response.token);
-          this.router.navigate(['/home']);
-        },
-        error: (err) => {
-          console.error('Register Failed', err);
-          this.toastr.error('Registration Failed');
+onRegister() {
+  this.registerSubmitted = true;
+  if (this.registerForm.valid) {
+    const registerUser: UserDTO = this.registerForm.value;
+    this.service.UserRegister(registerUser).subscribe({
+      next: (response: { token: string }) => {
+        this.userAuth.SetToken(response.token);
+
+        // Merge guest cart
+        const guestCart = this.CartSer.getLocalItems();
+        if (guestCart.length > 0) {
+          this.CartSer.addMultipleServerCart(guestCart).subscribe({
+            next: () => {
+              this.CartSer.ResetCart();
+              this.CartSer.updateCartCount().subscribe();
+            },
+            error: err => console.error('Failed to merge guest cart', err)
+          });
         }
-      });
-    } else {
-      this.registerForm.markAllAsTouched();
-    }
+
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        console.error('Register Failed', err);
+        this.toastr.error('Registration Failed');
+      }
+    });
+  } else {
+    this.registerForm.markAllAsTouched();
   }
+}
+
 }
