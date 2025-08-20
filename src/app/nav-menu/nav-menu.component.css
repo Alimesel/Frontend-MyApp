@@ -1,3 +1,4 @@
+/* ================= Navbar ================= */
 .navbar {
   position: fixed;
   top: 0;
@@ -54,11 +55,11 @@
 /* Right section */
 .navbar-right {
   display: flex;
-  align-items: center; /* vertically center all icons */
+  align-items: center;
   gap: 10px;
 }
 
-/* Make all icon containers same size and inline-flex */
+/* Icons container */
 .icon-link,
 .basket-container,
 .user-dropdown {
@@ -70,7 +71,7 @@
   position: relative;
 }
 
-/* Icons inside containers */
+/* Icons */
 .icon-link i,
 .user-dropdown i {
   font-size: 18px;
@@ -106,29 +107,33 @@
   pointer-events: none;
 }
 
-/* User dropdown menu */
+/* User dropdown container */
 .user-dropdown {
+  position: relative;
   cursor: pointer;
 }
 
+/* Dropdown menu */
 .user-dropdown .dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: 110%;
   right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  min-width: 120px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background: #fff;
+  border-radius: 8px;
+  min-width: 140px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   display: none;
   z-index: 1001;
-  padding: 5px 0;
+  padding: 0;
+  overflow: hidden;
 }
 
+/* Show menu when active */
 .user-dropdown .dropdown-menu.show {
   display: block;
 }
 
+/* Dropdown items common styles */
 .user-dropdown .dropdown-menu li {
   list-style: none;
 }
@@ -137,25 +142,43 @@
 .user-dropdown .dropdown-menu li button {
   display: block;
   width: 100%;
-  padding: 6px 10px;
-  color: black;
-  background: transparent;
-  border: none;
+  padding: 10px 15px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
   text-align: left;
-  font-size: 0.8rem;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  transition: background 0.2s ease;
-    text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 0; /* remove extra box */
 }
 
+/* Hover effect for all items */
 .user-dropdown .dropdown-menu li a:hover,
-.user-dropdown .dropdown-menu li button:hover,
-.user-dropdown .dropdown-menu li a:focus,
-.user-dropdown .dropdown-menu li button:focus {
-  background-color: #007bff; /* blue on hover/focus */
-  color: white;
-  outline: none;
-  text-decoration: none;
+.user-dropdown .dropdown-menu li button:hover {
+  background-color: #f0f0f0;
+  color: inherit;
+}
+
+/* Profile link (blue) */
+.user-dropdown .dropdown-menu li a {
+  color: #007bff;
+}
+
+.user-dropdown .dropdown-menu li a:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Logout button (red) */
+.user-dropdown .dropdown-menu li button {
+  color: #ff4d4d;
+}
+
+.user-dropdown .dropdown-menu li button:hover {
+  background-color: #ff4d4d;
+  color: #fff;
 }
 
 /* Connect button */
@@ -178,28 +201,27 @@
   color: white;
 }
 
-/* ========== RESPONSIVE ========== */
+/* ================= Responsive ================= */
 @media (max-width: 576px) {
   .container {
     flex-wrap: nowrap;
-    height: 45px; /* smaller navbar height */
+    height: 45px;
     padding: 5px 10px;
   }
 
-  /* Center links shrink and stay in one row */
-.navbar-center {
+  .navbar-center {
     order: 2;
-    flex: 1; /* let it take remaining space naturally */
-    justify-content: space-around; /* evenly distribute */
-    gap: 5px; /* bigger spacing between links */
+    flex: 1;
+    justify-content: space-around;
+    gap: 5px;
     margin: 0;
     font-size: 0.7rem;
   }
 
   .nav-link {
     font-size: 0.7rem;
-    text-decoration: none; /* remove underline */
-    padding: 2px 4px; /* add a little padding */
+    text-decoration: none;
+    padding: 2px 4px;
     transition: color 0.2s ease;
   }
 
@@ -207,14 +229,12 @@
     text-decoration: none;
     color: #222;
   }
-}
-  /* Right section */
+
   .navbar-right {
     order: 3;
     gap: 6px;
   }
 
-  /* Icons smaller on mobile but still visible */
   .icon-link,
   .basket-container,
   .user-dropdown {
@@ -227,15 +247,14 @@
     font-size: 16px;
   }
 
-  /* Logo slightly smaller */
   .brand img {
     width: 70px;
     height: 65px;
-    transform: translateY(5px); /* move down 5px */
-
+    transform: translateY(5px);
   }
 
   .connect-btn {
     font-size: 0.65rem;
     padding: 2px 6px;
   }
+}

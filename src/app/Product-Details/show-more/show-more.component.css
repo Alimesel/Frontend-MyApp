@@ -283,15 +283,17 @@ body {
 .related-products-section .see-more-btn {
   display: inline-block;
   background: #2563eb;
-  color: #fff;
+  width: 200px;
+  color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 4px 12px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
   opacity: 0;
   transform: translateY(10px);
+
 }
 
 .related-products-section .product-card:hover .see-more-btn {
