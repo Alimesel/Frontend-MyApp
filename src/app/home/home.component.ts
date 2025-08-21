@@ -42,10 +42,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   fullText = '';
   currentIndex = 0;
   private textAnimationInterval: any;
-
-  // search + category selection state
   selectedCategoryId: number | null = null;
   searchTerm: string = '';
+  private searchDebounce: any;
 
   constructor(
     private Service: ServiceService,
@@ -70,24 +69,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
 
     if (history.state.scrollToFooter) {
-      setTimeout(() => {
-        document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
-      }, 200);
+      setTimeout(() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }), 200);
     }
   }
 
   ngOnDestroy(): void {
     this.filterSubscription?.unsubscribe();
-    if (this.slideInterval) clearInterval(this.slideInterval);
-    if (this.textAnimationInterval) clearInterval(this.textAnimationInterval);
+    clearInterval(this.slideInterval);
+    clearInterval(this.textAnimationInterval);
+    clearTimeout(this.searchDebounce);
   }
 
-  // 🔎 Trigger search
+  // SEARCH
   onSearch(): void {
-    this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
+    clearTimeout(this.searchDebounce);
+    this.searchDebounce = setTimeout(() => {
+      this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
+    }, 300);
   }
 
-  // 📂 Category change
   onCategoryChange(event: any): void {
     this.selectedCategoryId = +event.target.value || null;
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
@@ -97,13 +97,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.fullText = text;
     this.currentIndex = 0;
     this.animatedText = '';
-    
-    if (this.textAnimationInterval) clearInterval(this.textAnimationInterval);
+    clearInterval(this.textAnimationInterval);
 
     this.textAnimationInterval = setInterval(() => {
       if (this.currentIndex < this.fullText.length) {
-        this.animatedText += this.fullText[this.currentIndex];
-        this.currentIndex++;
+        this.animatedText += this.fullText[this.currentIndex++];
       } else {
         clearInterval(this.textAnimationInterval);
       }
@@ -129,77 +127,47 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
         this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
 
-        if (this.filteredHeroSections.length > 0 && this.filteredHeroSections[0].paragraph) {
-          this.startTextAnimation(this.filteredHeroSections[0].paragraph);
-        }
-
-        if (this.filteredHeroSections.length > 0) {
-          const heroSection = this.filteredHeroSections[0];
-          if (heroSection.imageUrl2 || heroSection.imageUrl3) this.startAutoSlide();
-        }
+        if (this.filteredHeroSections[0]?.paragraph) this.startTextAnimation(this.filteredHeroSections[0].paragraph);
+        if (this.filteredHeroSections[0] && (this.filteredHeroSections[0].imageUrl2 || this.filteredHeroSections[0].imageUrl3)) this.startAutoSlide();
       },
       error: (error) => console.error('Failed to load home sections:', error)
     });
   }
 
-  scrollToProducts() {
-    this.viewportScroller.scrollToAnchor('products-section');
-  }
+  scrollToProducts() { this.viewportScroller.scrollToAnchor('products-section'); }
 
   getActiveSlides(section: HomeSection): string[] {
     return [section.imageUrl, section.imageUrl2, section.imageUrl3, section.imageUrl4].filter(url => !!url);
   }
 
-  startAutoSlide() {
-    this.slideInterval = setInterval(() => this.nextSlide(), 5000);
-  }
+  startAutoSlide() { this.slideInterval = setInterval(() => this.nextSlide(), 5000); }
 
   nextSlide() {
     if (!this.filteredHeroSections.length) return;
-    const heroSection = this.filteredHeroSections[0];
-    const maxSlides = this.getActiveSlides(heroSection).length;
-    this.currentSlideIndex = (this.currentSlideIndex + 1) % maxSlides;
+    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
   }
 
   prevSlide() {
     if (!this.filteredHeroSections.length) return;
-    const heroSection = this.filteredHeroSections[0];
-    const maxSlides = this.getActiveSlides(heroSection).length;
-    this.currentSlideIndex = (this.currentSlideIndex - 1 + maxSlides) % maxSlides;
+    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
   }
 
-  goToSlide(index: number) {
-    this.currentSlideIndex = index;
-  }
+  goToSlide(index: number) { this.currentSlideIndex = index; }
 
   loadCategories() {
     this.Service.GetCategory().subscribe({
-      next: (data) => {
-        this.Category = data.map((cat: any) => ({
-          ...cat,
-          image: `${environment.apiUrl.replace('/api','')}/${cat.image}`,
-        }));
-      },
-      error: (error) => {
-        this.error = 'Failed to load categories';
-        console.error(error);
-      },
+      next: (data) => this.Category = data.map((cat: any) => ({ ...cat, image: `${environment.apiUrl.replace('/api','')}/${cat.image}` })),
+      error: (error) => { this.error = 'Failed to load categories'; console.error(error); },
     });
   }
 
   loadProducts(categoryID?: number, search?: string) {
-    const searchTerm = search?.trim() ? search.trim() : undefined;
+    const searchTerm = search?.trim() || undefined;
     this.Service.GetProducts(categoryID, searchTerm).subscribe({
-      next: (data) => {
-        this.Product = data.map((product: any) => ({
-          ...product,
-          imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}`,
-        }));
-      },
-      error: (error) => {
-        this.error = 'Failed to load products';
-        console.error(error);
-      },
+      next: (data) => this.Product = data.map((product: any) => ({ ...product, imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}` })),
+      error: (error) => { this.error = 'Failed to load products'; console.error(error); },
     });
   }
 
@@ -220,16 +188,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.UserAuth.UserAuthenticate()) {
       this.Service.AddToWishList(productId).subscribe({
         next: () => this.router.navigate(['/wish']),
-        error: (error) => {
-          if (error.status === 400) {
-            alert('Product already in the wishlist.');
-            this.router.navigate(['/wish']);
-          }
-        },
+        error: (error) => { if (error.status === 400) { alert('Product already in the wishlist.'); this.router.navigate(['/wish']); } },
       });
     } else {
       alert('Please log in first to add to the wishlist.');
       this.router.navigate(['/login']);
     }
   }
+
+  trackByProductId(index: number, product: Product) { return product.id; }
 }
