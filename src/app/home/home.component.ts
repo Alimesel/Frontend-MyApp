@@ -15,9 +15,9 @@ interface HomeSection {
   title: string;
   description: string;
   imageUrl: string;
-  imageUrl2: string;
-  imageUrl3: string;
-  imageUrl4: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  imageUrl4?: string;
   displayOrder: number;
   isActive: boolean;
   paragraph?: string;
@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearTimeout(this.searchDebounce);
   }
 
-  // Search
+  // ===== SEARCH & FILTER =====
   onSearch(): void {
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(() => {
@@ -91,7 +91,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
   }
 
-  // Hero Slider
+  // ===== HERO SLIDER =====
+getActiveSlides(section: HomeSection): string[] {
+  if (!section) return [];
+  return [
+    section.imageUrl ?? '',
+    section.imageUrl2 ?? '',
+    section.imageUrl3 ?? '',
+    section.imageUrl4 ?? '',
+  ].filter((url) => url.trim() !== '');
+}
+
   startTextAnimation(text: string) {
     this.fullText = text;
     this.currentIndex = 0;
@@ -150,32 +160,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  scrollToProducts() {
-    this.viewportScroller.scrollToAnchor('products-section');
-  }
-
-  getActiveSlides(section: HomeSection): string[] {
-    return [
-      section.imageUrl,
-      section.imageUrl2,
-      section.imageUrl3,
-      section.imageUrl4,
-    ].filter((url) => !!url);
-  }
-
   startAutoSlide() {
     this.slideInterval = setInterval(() => this.nextSlide(), 5000);
   }
 
   nextSlide() {
-    if (!this.filteredHeroSections.length) return;
-    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
+    const slides = this.filteredHeroSections[0]
+      ? this.getActiveSlides(this.filteredHeroSections[0]).length
+      : 0;
+    if (slides === 0) return;
     this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
   }
 
   prevSlide() {
-    if (!this.filteredHeroSections.length) return;
-    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
+    const slides = this.filteredHeroSections[0]
+      ? this.getActiveSlides(this.filteredHeroSections[0]).length
+      : 0;
+    if (slides === 0) return;
     this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
   }
 
@@ -183,7 +184,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentSlideIndex = index;
   }
 
-  // Categories & Products
+  scrollToProducts() {
+    this.viewportScroller.scrollToAnchor('products-section');
+  }
+
+  // ===== CATEGORIES & PRODUCTS =====
   loadCategories() {
     this.Service.GetCategory().subscribe({
       next: (data) =>
