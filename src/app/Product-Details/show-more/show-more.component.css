@@ -28,9 +28,12 @@ body {
 
 .product-image img {
   width: 100%;
+  height: auto;
   border-radius: 12px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  object-fit: cover;
 }
+
 
 .product-image img:hover {
   transform: scale(1.05);

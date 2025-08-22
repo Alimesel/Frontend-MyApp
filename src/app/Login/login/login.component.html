@@ -1,4 +1,5 @@
-<div class="login-wrap">
+<section class="login-wrap" aria-label="User Authentication Form">
+
   <div class="login-html">
     <!-- Tabs -->
     <input id="tab-1" type="radio" name="tab" class="sign-in" checked>
@@ -8,73 +9,80 @@
     <label for="tab-2" class="tab">Sign Up</label>
 
     <div class="login-form">
+
       <!-- LOGIN FORM -->
       <div class="sign-in-htm">
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate>
           <div class="group">
             <label for="login-username" class="label">Username</label>
-            <input id="login-username" type="text" class="input" formControlName="username">
+            <input id="login-username" type="text" class="input" formControlName="username"
+                   [attr.aria-required]="true" [attr.aria-label]="'Username for login'" />
           </div>
           <div class="group">
             <label for="login-password" class="label">Password</label>
-            <input id="login-password" type="password" class="input" formControlName="password">
+            <input id="login-password" type="password" class="input" formControlName="password"
+                   [attr.aria-required]="true" [attr.aria-label]="'Password for login'" />
           </div>
           <div class="group">
             <input id="check" type="checkbox" class="check" checked>
             <label for="check"><span class="icon"></span> Keep me Signed in</label>
           </div>
           <div class="group">
-            <input type="submit" class="button" value="Sign In">
+            <input type="submit" class="button" value="Sign In"
+                   [disabled]="loginForm.invalid" [attr.aria-label]="'Sign In Button'" />
           </div>
         </form>
         <div class="hr"></div>
         <div class="foot-lnk">
-          <a href="#">Forgot Password?</a>
+          <a href="#" aria-label="Forgot Password Link">Forgot Password?</a>
         </div>
       </div>
 
       <!-- REGISTER FORM -->
       <div class="sign-up-htm">
-        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
           <div class="register-grid">
             <div class="group">
               <label class="label">First Name</label>
-              <input type="text" class="input" formControlName="firstname">
+              <input type="text" class="input" formControlName="firstname" [attr.aria-label]="'First Name'" />
             </div>
             <div class="group">
               <label class="label">Last Name</label>
-              <input type="text" class="input" formControlName="lastname">
+              <input type="text" class="input" formControlName="lastname" [attr.aria-label]="'Last Name'" />
             </div>
             <div class="group">
               <label class="label">Username</label>
-              <input type="text" class="input" formControlName="username">
+              <input type="text" class="input" formControlName="username" [attr.aria-label]="'Username'" />
             </div>
             <div class="group">
               <label class="label">Email</label>
-              <input type="email" class="input" formControlName="Email">
+              <input type="email" class="input" formControlName="Email" [attr.aria-label]="'Email Address'" />
             </div>
             <div class="group">
               <label class="label">Password</label>
-              <input type="password" class="input" formControlName="Password">
+              <input type="password" class="input" formControlName="Password" [attr.aria-label]="'Password'" />
             </div>
             <div class="group">
               <label class="label">Phone Number</label>
-              <input type="text" class="input" formControlName="PhoneNumber">
+              <input type="tel" class="input" formControlName="PhoneNumber" [attr.aria-label]="'Phone Number'" />
             </div>
             <div class="group">
               <label class="label">Country</label>
-              <input type="text" class="input" formControlName="Country">
+              <input type="text" class="input" formControlName="Country" [attr.aria-label]="'Country'" />
             </div>
             <div class="group">
               <label class="label">City</label>
-              <input type="text" class="input" formControlName="City">
+              <input type="text" class="input" formControlName="City" [attr.aria-label]="'City'" />
             </div>
           </div>
           <div class="group">
-            <input type="submit" class="button" value="Sign Up">
+            <input type="submit" class="button" value="Sign Up"
+                   [disabled]="registerForm.invalid" [attr.aria-label]="'Sign Up Button'" />
           </div>
         </form>
       </div>
+
     </div>
   </div>
-</div>
+
+</section>

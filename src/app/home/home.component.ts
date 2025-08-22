@@ -26,7 +26,7 @@ interface HomeSection {
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   Product: Product[] = [];
@@ -37,17 +37,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   error: string | null = null;
 
   currentSlideIndex = 0;
-  private slideInterval: any;
+  private slideInterval?: any;
   private filterSubscription?: Subscription;
 
   animatedText = '';
   fullText = '';
   currentIndex = 0;
-  private textAnimationInterval: any;
+  private textAnimationInterval?: any;
 
   selectedCategoryId: number | null = null;
-  searchTerm: string = '';
-  private searchDebounce: any;
+  searchTerm = '';
+  private searchDebounce?: any;
 
   constructor(
     private Service: ServiceService,
@@ -78,12 +78,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearTimeout(this.searchDebounce);
   }
 
-  // ====== SEARCH & CATEGORY ======
+  // Search
   onSearch(): void {
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(() => {
       this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
-    }, 300);
+    }, 350);
   }
 
   onCategoryChange(event: any): void {
@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
   }
 
-  // ====== HERO SLIDER ======
+  // Hero Slider
   startTextAnimation(text: string) {
     this.fullText = text;
     this.currentIndex = 0;
@@ -115,31 +115,57 @@ export class HomeComponent implements OnInit, OnDestroy {
           title: section.title,
           description: section.description,
           paragraph: section.paragraph,
-          imageUrl: `${environment.apiUrl.replace('/api','')}/${section.imageUrl}`,
-          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}` : '',
-          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}` : '',
-          imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl4}` : '',
+          imageUrl: `${environment.apiUrl.replace('/api', '')}/${section.imageUrl}`,
+          imageUrl2: section.imageUrl2
+            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl2}`
+            : '',
+          imageUrl3: section.imageUrl3
+            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl3}`
+            : '',
+          imageUrl4: section.imageUrl4
+            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl4}`
+            : '',
           displayOrder: section.displayOrder,
-          isActive: section.isActive
+          isActive: section.isActive,
         }));
 
-        this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
-        this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
+        this.filteredHeroSections = this.homeSections.filter(
+          (s) => s.displayOrder === 1
+        );
+        this.filteredOtherSections = this.homeSections.filter(
+          (s) => s.displayOrder > 1
+        );
 
-        if (this.filteredHeroSections[0]?.paragraph) this.startTextAnimation(this.filteredHeroSections[0].paragraph);
-        if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1) this.startAutoSlide();
+        if (this.filteredHeroSections[0]?.paragraph)
+          this.startTextAnimation(this.filteredHeroSections[0].paragraph);
+
+        if (
+          this.filteredHeroSections[0] &&
+          this.getActiveSlides(this.filteredHeroSections[0]).length > 1
+        ) {
+          this.startAutoSlide();
+        }
       },
-      error: (error) => console.error('Failed to load home sections:', error)
+      error: (error) => console.error('Failed to load home sections:', error),
     });
   }
 
-  scrollToProducts() { this.viewportScroller.scrollToAnchor('products-section'); }
-
-  getActiveSlides(section: HomeSection): string[] {
-    return [section.imageUrl, section.imageUrl2, section.imageUrl3, section.imageUrl4].filter(url => !!url);
+  scrollToProducts() {
+    this.viewportScroller.scrollToAnchor('products-section');
   }
 
-  startAutoSlide() { this.slideInterval = setInterval(() => this.nextSlide(), 5000); }
+  getActiveSlides(section: HomeSection): string[] {
+    return [
+      section.imageUrl,
+      section.imageUrl2,
+      section.imageUrl3,
+      section.imageUrl4,
+    ].filter((url) => !!url);
+  }
+
+  startAutoSlide() {
+    this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+  }
 
   nextSlide() {
     if (!this.filteredHeroSections.length) return;
@@ -153,21 +179,37 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
   }
 
-  goToSlide(index: number) { this.currentSlideIndex = index; }
+  goToSlide(index: number) {
+    this.currentSlideIndex = index;
+  }
 
-  // ====== CATEGORIES & PRODUCTS ======
+  // Categories & Products
   loadCategories() {
     this.Service.GetCategory().subscribe({
-      next: (data) => this.Category = data.map((cat: any) => ({ ...cat, image: `${environment.apiUrl.replace('/api','')}/${cat.image}` })),
-      error: (error) => { this.error = 'Failed to load categories'; console.error(error); },
+      next: (data) =>
+        (this.Category = data.map((cat: any) => ({
+          ...cat,
+          image: `${environment.apiUrl.replace('/api', '')}/${cat.image}`,
+        }))),
+      error: (error) => {
+        this.error = 'Failed to load categories';
+        console.error(error);
+      },
     });
   }
 
   loadProducts(categoryID?: number, search?: string) {
     const searchTerm = search?.trim() || undefined;
     this.Service.GetProducts(categoryID, searchTerm).subscribe({
-      next: (data) => this.Product = data.map((product: any) => ({ ...product, imageUrl: `${environment.apiUrl.replace('/api','')}/${product.imageUrl}` })),
-      error: (error) => { this.error = 'Failed to load products'; console.error(error); },
+      next: (data) =>
+        (this.Product = data.map((product: any) => ({
+          ...product,
+          imageUrl: `${environment.apiUrl.replace('/api', '')}/${product.imageUrl}`,
+        }))),
+      error: (error) => {
+        this.error = 'Failed to load products';
+        console.error(error);
+      },
     });
   }
 
@@ -188,11 +230,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.UserAuth.UserAuthenticate()) {
       this.Service.AddToWishList(productId).subscribe({
         next: () => this.router.navigate(['/wish']),
-        error: (error) => { 
-          if (error.status === 400) { 
+        error: (error) => {
+          if (error.status === 400) {
             alert('Product already in the wishlist.');
-            this.router.navigate(['/wish']); 
-          } 
+            this.router.navigate(['/wish']);
+          }
         },
       });
     } else {
@@ -201,5 +243,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  trackByProductId(index: number, product: Product) { return product.id; }
+  trackByProductId(index: number, product: Product) {
+    return product.id;
+  }
 }

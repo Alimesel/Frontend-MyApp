@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
 <div *ngIf="Product == null">
   <div [routerLink]="'/home'" class="alert alert-danger" role="alert">
@@ -9,7 +9,14 @@
 <div class="product-detail-container">
   <!-- Product Image -->
   <div class="product-image">
-    <img [src]="Product.imageUrl" alt="{{Product.name}}" />
+    <img 
+      [src]="Product.imageUrl" 
+      alt="{{ Product.name }}" 
+      width="600" height="600"
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
     <p *ngIf="Product.quantity <= 0" class="out-of-stock">Out of Stock</p>
   </div>
 
@@ -19,6 +26,7 @@
     <p class="price">{{ Product.price | currency }}</p>
     <p>{{ Product.description }}</p>
 
+    <!-- Size Selector -->
     <div *ngIf="sizeOptions.length > 0" class="size-selector">
       <label class="size-label">Select Size</label>
       <div class="size-options">
@@ -31,6 +39,7 @@
       </div>
     </div>
 
+    <!-- Wishlist & Cart -->
     <div class="button-container">
       <button class="icon-button heart-beat" (click)="addToWishlist(Product.id)" aria-label="Add to Wishlist">
         <span class="material-symbols-outlined">favorite</span>
@@ -49,10 +58,9 @@
   </button>
 </div>
 
-<!-- Related Products Section -->
+<!-- Related Products -->
 <section class="products-section related-products-section" *ngIf="RelatedProducts.length > 0">
   <div class="products-header">
-    <!-- Animated Star -->
     <span class="section-star material-symbols-outlined">star</span>
     <h2>You may be interested in</h2>
     <hr class="section-separator" />
@@ -61,18 +69,24 @@
   <div class="product-container">
     <div *ngFor="let product of RelatedProducts" class="product-card">
       <div class="out-of-stock" *ngIf="product.quantity <= 0">Out of Stock</div>
-      
+
       <button class="wishlist-btn" (click)="addToWishlist(product.id)">
         <span class="material-symbols-outlined">favorite</span>
       </button>
 
       <div class="image-container">
-        <img [src]="product.imageUrl" [alt]="product.name" />
+        <img 
+          [src]="product.imageUrl" 
+          [alt]="product.name" 
+          width="300" height="300"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
-      
+
       <div class="content">
-        <h4>{{product.name}}</h4>
-        <div class="price">{{product.price | currency}}</div>
+        <h4>{{ product.name }}</h4>
+        <div class="price">{{ product.price | currency }}</div>
         <button class="see-more-btn" (click)="showMoreProducts(product)">See More</button>
       </div>
     </div>

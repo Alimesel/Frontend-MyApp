@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Product, Category } from './../../Interfaces/Product';
+import { Product } from './../../Interfaces/Product';
 import { environment } from 'src/environments/environment.prod';
 import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { DescriptionService } from 'src/app/Service/description.service';
@@ -13,8 +13,6 @@ import { UserAuthenticationService } from 'src/app/Service/user-authentication.s
   styleUrls: ['./show-more.component.css']
 })
 export class ShowMoreComponent implements OnInit {
-  
-
   Product: Product = {
     id: 1,
     name: '',
@@ -22,15 +20,11 @@ export class ShowMoreComponent implements OnInit {
     quantity: 0,
     description: '',
     imageUrl: '',
-    selectedSize : '',
-    category: {
-      id: 0, name: '',
-      image: '',
-    
-    }
+    selectedSize: '',
+    category: { id: 0, name: '', image: '' }
   };
-  sizeOptions : string [] = []
-  
+
+  sizeOptions: string[] = [];
   RelatedProducts: Product[] = [];
 
   constructor(
@@ -43,18 +37,21 @@ export class ShowMoreComponent implements OnInit {
 
   ngOnInit(): void {
     this.Product = this.DescriptionSer.GetProductDescription();
-    setTimeout(()=> this.ScrollUp(),10)
+
+    // Scroll to top after load
+    setTimeout(() => this.ScrollUp(), 10);
+
     this.DescriptionSer.description$.subscribe(result => {
       if (result) {
         this.Product = result;
-        console.log(this.Product)
         this.GetProductsByCategory();
-        // Delay scroll to ensure the view is ready
-        setTimeout(() => this.ScrollUp(),100);
+        setTimeout(() => this.ScrollUp(), 100);
       }
     });
+
     this.GetProductsByCategory();
 
+    // Assign size options by category
     if (this.Product.category?.id === 1 || this.Product.category?.id === 3) {
       this.sizeOptions = ['S', 'M', 'L', 'XL','XXL'];
     } else if (this.Product.category?.id === 2) {
@@ -63,61 +60,59 @@ export class ShowMoreComponent implements OnInit {
   }
 
   addToCart(product: Product) {
-  if(!product.selectedSize){
-    alert('Please select a size')
-    return
+    if (!product.selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+    this.CartSer.addToCart(product).subscribe(() => {
+      this.router.navigate(['/cart']);
+    });
   }
-  this.CartSer.addToCart(product).subscribe(()=>{
-    this.router.navigate(['/cart'])
-  });
+
+  selectSize(size: string) {
+    this.Product.selectedSize = size;
   }
- selectSize(size : string){
-  this.Product.selectedSize = size;
-  console.log(this.Product.selectedSize)
- }
+
   goBack() {
     this.router.navigate(['/home']);
   }
 
-   addToWishlist(productId: number) {
-  if (this.UserAuth.UserAuthenticate()) {
-    this.Service.AddToWishList(productId).subscribe({
-      next: (data: any) => {
-        this.router.navigate(['/wish']);
-      },
-      error: (error) => {
-        if (error.status === 400) {
-          alert("Product already in the wishlist.");
-          this.router.navigate(['/wish']);
-        } 
+  addToWishlist(productId: number) {
+    if (this.UserAuth.UserAuthenticate()) {
+      this.Service.AddToWishList(productId).subscribe({
+        next: () => this.router.navigate(['/wish']),
+        error: (error) => {
+          if (error.status === 400) {
+            alert("Product already in the wishlist.");
+            this.router.navigate(['/wish']);
+          }
         }
-    });
-  } else {
-    alert("Please log in first to add to the wishlist.");
-    this.router.navigate(['/login']);
+      });
+    } else {
+      alert("Please log in first to add to the wishlist.");
+      this.router.navigate(['/login']);
+    }
   }
-}
 
   GetProductsByCategory() {
     let categoryid = this.Product.category.id;
     this.Service.GetProducts(categoryid).subscribe({
       next: data => {
-        this.RelatedProducts = data.filter(eachproduct => eachproduct.id !== this.Product.id)
-          .map(eachproduct => ({
-            ...eachproduct,
-            imageUrl: `${environment.apiUrl.replace('/api','')}/${eachproduct.imageUrl}`,
+        this.RelatedProducts = data.filter(each => each.id !== this.Product.id)
+          .map(each => ({
+            ...each,
+            imageUrl: `${environment.apiUrl.replace('/api','')}/${each.imageUrl}`,
           }));
       }
     });
   }
 
   showMoreProducts(product: Product) {
-    console.log('Selected Product for Details:', product);
     this.DescriptionSer.SetProductDescription(product);
     this.router.navigate(['/product-description']);
   }
 
- ScrollUp(){
-  window.scrollTo({top: 0, behavior: 'smooth'});
- }
+  ScrollUp() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }

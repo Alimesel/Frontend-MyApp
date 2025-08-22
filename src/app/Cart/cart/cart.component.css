@@ -1,13 +1,14 @@
-/* Container */
+/* ====== CART CONTAINER ====== */
 .cart-container {
   display: flex;
   max-width: 1100px;
   margin: 50px auto;
   gap: 30px;
   flex-wrap: wrap;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Left Cart Section */
+/* ====== LEFT CART SECTION ====== */
 .cart-left {
   flex: 2;
   background-color: #ffffff;
@@ -23,11 +24,10 @@
   align-items: center;
   margin-bottom: 20px;
 }
-
 .cart-header h3 {
   color: #ff4d4d;
+  font-size: 1.5rem;
 }
-
 .cart-count {
   color: #555;
   font-weight: 500;
@@ -40,6 +40,7 @@
   gap: 15px;
 }
 
+/* Individual Cart Item */
 .cart-item {
   display: flex;
   align-items: center;
@@ -50,18 +51,18 @@
   position: relative;
   transition: transform 0.2s ease;
 }
-
 .cart-item:hover {
   transform: translateY(-2px);
 }
 
-/* Item Image */
+/* Product Image */
 .cart-item img {
   width: 90px;
   height: 90px;
   object-fit: cover;
   border-radius: 8px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* Item Details */
@@ -71,19 +72,16 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .item-info {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .item-name {
   font-weight: bold;
   font-size: 1.05rem;
   color: #333;
 }
-
 .item-size .badge {
   background-color: #ffe6e6;
   color: #ff4d4d;
@@ -92,7 +90,6 @@
   font-size: 0.85rem;
   font-weight: bold;
 }
-
 .item-price {
   color: #4caf50;
   font-weight: bold;
@@ -104,7 +101,6 @@
   align-items: center;
   gap: 8px;
 }
-
 .item-quantity button {
   border: none;
   background-color: #ff4d4d;
@@ -116,11 +112,9 @@
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .item-quantity button:hover {
   background-color: #e60000;
 }
-
 .item-quantity input {
   width: 40px;
   text-align: center;
@@ -141,33 +135,35 @@
   font-size: 1.3rem;
   color: #ff4d4d;
   cursor: pointer;
+  transition: color 0.3s;
+}
+.btn-delete:hover {
+  color: #e60000;
 }
 
 /* Back to Shop */
 .back-shop {
   margin-top: 25px;
 }
-
 .back-shop a {
   color: #ff4d4d;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
 }
-
 .back-shop a:hover {
   color: #e60000;
 }
 
-/* Right Summary Section */
+/* ====== RIGHT SUMMARY SECTION ====== */
 .cart-right {
   flex: 1;
   min-width: 280px;
 }
-
 .cart-right h4 {
   color: #ff4d4d;
   margin-bottom: 20px;
+  font-size: 1.25rem;
 }
 
 /* Summary Card */
@@ -181,13 +177,13 @@
   gap: 15px;
 }
 
+/* Summary Rows */
 .summary-row {
   display: flex;
   justify-content: space-between;
   font-weight: 500;
   font-size: 1rem;
 }
-
 .summary-row.total {
   font-size: 1.15rem;
   font-weight: bold;
@@ -200,12 +196,10 @@
   flex-direction: column;
   gap: 5px;
 }
-
 .form-section label {
   font-weight: 500;
   color: #555;
 }
-
 .form-section select,
 .form-section input {
   padding: 10px 12px;
@@ -215,7 +209,6 @@
   font-size: 0.95rem;
   transition: border 0.3s;
 }
-
 .form-section select:focus,
 .form-section input:focus {
   border-color: #ff4d4d;
@@ -234,32 +227,64 @@
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .btn-checkout:hover {
   background-color: #e60000;
 }
 
-/* Responsive */
+/* No Products Found */
+.no-products {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 15px;
+  text-align: center;
+  background: #f2dddd;
+  border-radius: 15px;
+  margin: 40px auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.no-products-content h3 {
+  font-size: 1.8rem;
+  color: #ff4d4d;
+  margin-bottom: 10px;
+}
+.no-products-content p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+.back-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.back-btn:hover {
+  background: #e60000;
+  transform: translateY(-2px);
+}
+
+/* ====== RESPONSIVE ====== */
 @media (max-width: 768px) {
   .cart-container {
     flex-direction: column;
     gap: 20px;
   }
-
   .cart-left,
   .cart-right {
     width: 100%;
   }
-
   .cart-item {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .item-quantity {
     margin-top: 10px;
   }
-
   .btn-delete {
     position: static;
     margin-top: 10px;

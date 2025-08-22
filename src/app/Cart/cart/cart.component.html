@@ -6,32 +6,67 @@
       <span class="cart-count">{{ CartItems.length }} items</span>
     </div>
 
-    <div *ngIf="CartItems.length > 0" class="cart-list">
+    <div *ngIf="CartItems.length > 0; else emptyCart" class="cart-list">
       <div class="cart-item" *ngFor="let item of CartItems">
-        <img [src]="item.imageUrl" alt="{{item.name}}" (click)="productdescription(item)" />
+        <img
+          [src]="item.imageUrl"
+          [alt]="item.name"
+          (click)="productdescription(item)"
+          loading="lazy"
+        />
         <div class="cart-item-details">
           <div class="item-info">
             <span class="item-name">{{ item.name }}</span>
             <span class="item-size">Size: <span class="badge">{{ item.selectedSize }}</span></span>
             <span class="item-price">{{ item.price | currency }}</span>
           </div>
+
           <div class="item-quantity">
-            <button (click)="decreaseQuantityCart(item.id, item.selectedSize)">-</button>
-            <input type="text" [value]="item.quantity" readonly />
-            <button (click)="addQuantityCart(item.id, item.selectedSize)">+</button>
+            <button
+              (click)="decreaseQuantityCart(item.id, item.selectedSize)"
+              [attr.aria-label]="'Decrease quantity of ' + item.name"
+            >
+              −
+            </button>
+            <input
+              type="text"
+              [value]="item.quantity"
+              readonly
+              [attr.aria-label]="'Quantity of ' + item.name"
+            />
+            <button
+              (click)="addQuantityCart(item.id, item.selectedSize)"
+              [attr.aria-label]="'Increase quantity of ' + item.name"
+            >
+              +
+            </button>
           </div>
         </div>
-        <button class="btn-delete" (click)="removeFromCart(item.id, item.selectedSize)">×</button>
+
+        <button
+          class="btn-delete"
+          (click)="removeFromCart(item.id, item.selectedSize)"
+          [attr.aria-label]="'Remove ' + item.name + ' from cart'"
+        >
+          ×
+        </button>
       </div>
     </div>
 
-    <div class="back-shop">
-      <a [routerLink]="'/home'">&larr; Back to shop</a>
-    </div>
+    <ng-template #emptyCart>
+      <div class="no-products">
+        <div class="no-products-content">
+         
+          <h3>Your cart is empty</h3>
+          <p>Browse products and add items to your cart.</p>
+          <a routerLink="/home" class="back-btn">Back to shop</a>
+        </div>
+      </div>
+    </ng-template>
   </div>
 
   <!-- Summary Section -->
-  <div class="cart-right">
+  <div class="cart-right" *ngIf="CartItems.length > 0">
     <h4>Order Summary</h4>
     <div class="summary-card">
       <div class="summary-row">
@@ -44,16 +79,16 @@
       </div>
 
       <div class="form-section">
-        <label>Shipping Method</label>
-        <select>
+        <label for="shipping">Shipping Method</label>
+        <select id="shipping">
           <option>Standard Delivery - Free</option>
           <option>Express Delivery - $10</option>
         </select>
       </div>
 
       <div class="form-section">
-        <label>Promo Code</label>
-        <input type="text" placeholder="Enter your code" id="code" />
+        <label for="promo">Promo Code</label>
+        <input type="text" id="promo" placeholder="Enter your code" />
       </div>
 
       <hr />
