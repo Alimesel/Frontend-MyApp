@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Category, Product } from './../Interfaces/Product';
@@ -9,7 +9,6 @@ import { ServiceService } from '../Service/service.service';
 import { FilterService } from '../Service/filter.service';
 import { environment } from 'src/environments/environment.prod';
 import { ViewportScroller } from '@angular/common';
-import { isPlatformBrowser } from '@angular/common';
 
 interface HomeSection {
   id: number;
@@ -50,10 +49,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchTerm = '';
   private searchDebounce?: any;
 
-  // Track loaded images to prevent re-loading
-  loadedImages = new Set<string>();
-  isBrowser: boolean;
-
   constructor(
     private Service: ServiceService,
     private CartSer: CartserviceService,
@@ -61,11 +56,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private DescriptionSer: DescriptionService,
     private UserAuth: UserAuthenticationService,
     private filterService: FilterService,
-    private viewportScroller: ViewportScroller,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+    private viewportScroller: ViewportScroller
+  ) {}
 
   ngOnInit(): void {
     this.loadHomeSections();
@@ -172,8 +164,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   startAutoSlide() {
-    if (!this.isBrowser) return;
-    
     this.slideInterval = setInterval(() => this.nextSlide(), 5000);
   }
 
@@ -191,15 +181,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   goToSlide(index: number) {
     this.currentSlideIndex = index;
-  }
-
-  // Track image load status
-  onImageLoad(imageUrl: string) {
-    this.loadedImages.add(imageUrl);
-  }
-
-  isImageLoaded(imageUrl: string): boolean {
-    return this.loadedImages.has(imageUrl);
   }
 
   // Categories & Products
