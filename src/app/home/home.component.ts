@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Category, Product } from './../Interfaces/Product';
@@ -9,15 +9,16 @@ import { ServiceService } from '../Service/service.service';
 import { FilterService } from '../Service/filter.service';
 import { environment } from 'src/environments/environment.prod';
 import { ViewportScroller } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
 interface HomeSection {
   id: number;
   title: string;
   description: string;
   imageUrl: string;
-  imageUrl2?: string;
-  imageUrl3?: string;
-  imageUrl4?: string;
+  imageUrl2: string;
+  imageUrl3: string;
+  imageUrl4: string;
   displayOrder: number;
   isActive: boolean;
   paragraph?: string;
@@ -49,6 +50,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchTerm = '';
   private searchDebounce?: any;
 
+  // Track loaded images to prevent re-loading
+  loadedImages = new Set<string>();
+  isBrowser: boolean;
+
   constructor(
     private Service: ServiceService,
     private CartSer: CartserviceService,
@@ -56,8 +61,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     private DescriptionSer: DescriptionService,
     private UserAuth: UserAuthenticationService,
     private filterService: FilterService,
-    private viewportScroller: ViewportScroller
-  ) {}
+    private viewportScroller: ViewportScroller,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
     this.loadHomeSections();
@@ -78,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearTimeout(this.searchDebounce);
   }
 
-  // ===== SEARCH & FILTER =====
+  // Search
   onSearch(): void {
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(() => {
@@ -91,17 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
   }
 
-  // ===== HERO SLIDER =====
-getActiveSlides(section: HomeSection): string[] {
-  if (!section) return [];
-  return [
-    section.imageUrl ?? '',
-    section.imageUrl2 ?? '',
-    section.imageUrl3 ?? '',
-    section.imageUrl4 ?? '',
-  ].filter((url) => url.trim() !== '');
-}
-
+  // Hero Slider
   startTextAnimation(text: string) {
     this.fullText = text;
     this.currentIndex = 0;
@@ -160,23 +158,34 @@ getActiveSlides(section: HomeSection): string[] {
     });
   }
 
+  scrollToProducts() {
+    this.viewportScroller.scrollToAnchor('products-section');
+  }
+
+  getActiveSlides(section: HomeSection): string[] {
+    return [
+      section.imageUrl,
+      section.imageUrl2,
+      section.imageUrl3,
+      section.imageUrl4,
+    ].filter((url) => !!url);
+  }
+
   startAutoSlide() {
+    if (!this.isBrowser) return;
+    
     this.slideInterval = setInterval(() => this.nextSlide(), 5000);
   }
 
   nextSlide() {
-    const slides = this.filteredHeroSections[0]
-      ? this.getActiveSlides(this.filteredHeroSections[0]).length
-      : 0;
-    if (slides === 0) return;
+    if (!this.filteredHeroSections.length) return;
+    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
     this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
   }
 
   prevSlide() {
-    const slides = this.filteredHeroSections[0]
-      ? this.getActiveSlides(this.filteredHeroSections[0]).length
-      : 0;
-    if (slides === 0) return;
+    if (!this.filteredHeroSections.length) return;
+    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
     this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
   }
 
@@ -184,11 +193,16 @@ getActiveSlides(section: HomeSection): string[] {
     this.currentSlideIndex = index;
   }
 
-  scrollToProducts() {
-    this.viewportScroller.scrollToAnchor('products-section');
+  // Track image load status
+  onImageLoad(imageUrl: string) {
+    this.loadedImages.add(imageUrl);
   }
 
-  // ===== CATEGORIES & PRODUCTS =====
+  isImageLoaded(imageUrl: string): boolean {
+    return this.loadedImages.has(imageUrl);
+  }
+
+  // Categories & Products
   loadCategories() {
     this.Service.GetCategory().subscribe({
       next: (data) =>

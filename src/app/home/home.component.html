@@ -3,19 +3,21 @@
 <!-- HERO SECTION -->
 <section *ngFor="let section of filteredHeroSections" class="hero-section">
   <div class="slider-container" *ngIf="getActiveSlides(section).length > 0">
-    <div
-      class="slider-track"
-      [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'"
-      style="will-change: transform;"
-    >
-      <div class="slide" *ngFor="let imgUrl of getActiveSlides(section)">
-        <img
-          [src]="imgUrl"
-          [alt]="section.description"
-          class="slide-image"
-          loading="eager"
+    <div class="slider-track" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'" style="will-change: transform;">
+      <div class="slide" *ngFor="let imgUrl of getActiveSlides(section); let i = index">
+        <!-- Optimized image loading with eager loading for first slide -->
+        <img 
+          [src]="imgUrl" 
+          [alt]="section.description" 
+          class="slide-image" 
+          [loading]="i === 0 ? 'eager' : 'lazy'"
+          [class.loaded]="isImageLoaded(imgUrl)"
+          (load)="onImageLoad(imgUrl)"
+          decoding="async"
+          width="1200"
+          height="675"
         />
-        <div class="hero-content" *ngIf="currentSlideIndex === getActiveSlides(section).indexOf(imgUrl)">
+        <div class="hero-content" *ngIf="currentSlideIndex === i">
           <div class="animated-text">{{animatedText}}</div>
           <div class="hero-subtitle">{{section.description}}</div>
           <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
@@ -23,31 +25,32 @@
       </div>
     </div>
 
-    <button class="slider-nav left" (click)="prevSlide()">
-      <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <button class="slider-nav right" (click)="nextSlide()">
-      <span class="material-symbols-outlined">chevron_right</span>
-    </button>
+    <button class="slider-nav left" (click)="prevSlide()"><span class="material-symbols-outlined">chevron_left</span></button>
+    <button class="slider-nav right" (click)="nextSlide()"><span class="material-symbols-outlined">chevron_right</span></button>
 
     <div class="slider-dots">
-      <span
-        *ngFor="let dot of getActiveSlides(section); let i = index"
-        [class.active]="i === currentSlideIndex"
-        (click)="goToSlide(i)"
-      ></span>
+      <span *ngFor="let dot of getActiveSlides(section); let i = index" [class.active]="i === currentSlideIndex" (click)="goToSlide(i)"></span>
     </div>
   </div>
 </section>
 
 <!-- MAIN CONTENT -->
 <div class="home-container">
-  <!-- CATEGORY SECTIONS -->
   <div class="category-sections-wrapper">
     <ng-container *ngFor="let section of filteredOtherSections">
       <div class="category-section">
         <div class="category-image-wrapper">
-          <img [src]="section.imageUrl" [alt]="section.description" class="category-image" loading="lazy"/>
+          <img 
+            [src]="section.imageUrl" 
+            [alt]="section.description" 
+            class="category-image" 
+            loading="lazy"
+            [class.loaded]="isImageLoaded(section.imageUrl)"
+            (load)="onImageLoad(section.imageUrl)"
+            decoding="async"
+            width="600"
+            height="400"
+          />
           <div class="image-overlay">
             <button class="overlay-btn" (click)="scrollToProducts()">explore {{section.description}}</button>
           </div>
@@ -56,7 +59,6 @@
     </ng-container>
   </div>
 
-  <!-- PRODUCTS SECTION -->
   <section class="products-section" id="products-section">
     <div class="products-header">
       <h2>Our Featured Products</h2>
@@ -80,9 +82,12 @@
 
     <div *ngIf="Product.length === 0" class="no-products">
       <div class="no-products-content">
-        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Products" />
+        <!-- Inline SVG to avoid external request -->
+        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 10L12 13M12 13L9 10M12 13V8M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ff4b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <h3>No products found</h3>
-        <p>We couldn’t find any products matching your search or selected category.</p>
+        <p>We couldn't find any products matching your search or selected category.</p>
         <button class="back-btn" (click)="loadProducts()">Browse All Products</button>
       </div>
     </div>
@@ -94,7 +99,16 @@
           <span class="material-symbols-outlined">favorite</span>
         </button>
         <div class="image-container">
-          <img [src]="product.imageUrl" [alt]="product.name" loading="lazy"/>
+          <img 
+            [src]="product.imageUrl" 
+            [alt]="product.name" 
+            loading="lazy"
+            [class.loaded]="isImageLoaded(product.imageUrl)"
+            (load)="onImageLoad(product.imageUrl)"
+            decoding="async"
+            width="300"
+            height="300"
+          />
         </div>
         <div class="content">
           <h4>{{product.name}}</h4>
