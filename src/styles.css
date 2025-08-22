@@ -1,44 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* in src/styles.css or src/styles.scss */
+/* ========== GLOBAL STYLES ========== */
 @import 'node_modules/ngx-toastr/toastr.css';
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+/* Typography & links */
+html, body { height: 100%; margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+a { color: #0366d6; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Buttons */
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-code {
-  color: #e01a76;
-}
+/* Code highlighting */
+code { color: #e01a76; }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+/* Main container spacing */
 main.container {
   padding-top: 100px;
   box-sizing: border-box;
 }
 
 @media (max-width: 1800px) {
-  main.container {
-    padding-top: 60px;
-  }
+  main.container { padding-top: 60px; }
 }
 
 @media (max-width: 480px) {
-  main.container {
-    padding-top: 55px;
-  }
+  main.container { padding-top: 55px; }
 }
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-

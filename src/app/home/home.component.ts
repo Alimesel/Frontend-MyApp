@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Category, Product } from './../Interfaces/Product';
 import { CartserviceService } from '../Service/cartservice.service';
@@ -35,13 +35,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   filteredHeroSections: HomeSection[] = [];
   filteredOtherSections: HomeSection[] = [];
   error: string | null = null;
+
   currentSlideIndex = 0;
   private slideInterval: any;
   private filterSubscription?: Subscription;
+
   animatedText = '';
   fullText = '';
   currentIndex = 0;
   private textAnimationInterval: any;
+
   selectedCategoryId: number | null = null;
   searchTerm: string = '';
   private searchDebounce: any;
@@ -53,7 +56,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private DescriptionSer: DescriptionService,
     private UserAuth: UserAuthenticationService,
     private filterService: FilterService,
-    private activatedroute: ActivatedRoute,
     private viewportScroller: ViewportScroller
   ) {}
 
@@ -67,10 +69,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.loadProducts(categoryId, searchTerm);
       }
     );
-
-    if (history.state.scrollToFooter) {
-      setTimeout(() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }), 200);
-    }
   }
 
   ngOnDestroy(): void {
@@ -80,7 +78,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearTimeout(this.searchDebounce);
   }
 
-  // SEARCH
+  // ====== SEARCH & CATEGORY ======
   onSearch(): void {
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(() => {
@@ -93,6 +91,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
   }
 
+  // ====== HERO SLIDER ======
   startTextAnimation(text: string) {
     this.fullText = text;
     this.currentIndex = 0;
@@ -117,8 +116,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           description: section.description,
           paragraph: section.paragraph,
           imageUrl: `${environment.apiUrl.replace('/api','')}/${section.imageUrl}`,
-          imageUrl2: `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}`,
-          imageUrl3: `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}`,
+          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}` : '',
+          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}` : '',
           imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl4}` : '',
           displayOrder: section.displayOrder,
           isActive: section.isActive
@@ -128,7 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
 
         if (this.filteredHeroSections[0]?.paragraph) this.startTextAnimation(this.filteredHeroSections[0].paragraph);
-        if (this.filteredHeroSections[0] && (this.filteredHeroSections[0].imageUrl2 || this.filteredHeroSections[0].imageUrl3)) this.startAutoSlide();
+        if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1) this.startAutoSlide();
       },
       error: (error) => console.error('Failed to load home sections:', error)
     });
@@ -156,6 +155,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   goToSlide(index: number) { this.currentSlideIndex = index; }
 
+  // ====== CATEGORIES & PRODUCTS ======
   loadCategories() {
     this.Service.GetCategory().subscribe({
       next: (data) => this.Category = data.map((cat: any) => ({ ...cat, image: `${environment.apiUrl.replace('/api','')}/${cat.image}` })),
@@ -188,7 +188,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.UserAuth.UserAuthenticate()) {
       this.Service.AddToWishList(productId).subscribe({
         next: () => this.router.navigate(['/wish']),
-        error: (error) => { if (error.status === 400) { alert('Product already in the wishlist.'); this.router.navigate(['/wish']); } },
+        error: (error) => { 
+          if (error.status === 400) { 
+            alert('Product already in the wishlist.');
+            this.router.navigate(['/wish']); 
+          } 
+        },
       });
     } else {
       alert('Please log in first to add to the wishlist.');

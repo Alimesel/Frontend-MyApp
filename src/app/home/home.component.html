@@ -3,16 +3,10 @@
 <!-- HERO SECTION -->
 <section *ngFor="let section of filteredHeroSections" class="hero-section">
   <div class="slider-container" *ngIf="getActiveSlides(section).length > 0">
-    <div class="slider-track"
-         [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'"
-         style="will-change: transform;">
+    <div class="slider-track" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'" style="will-change: transform;">
       <div class="slide" *ngFor="let imgUrl of getActiveSlides(section)">
-        <img [src]="imgUrl"
-             [alt]="section.description"
-             class="slide-image"
-             loading="lazy"/>
-        <div class="hero-content"
-             *ngIf="currentSlideIndex === getActiveSlides(section).indexOf(imgUrl)">
+        <img [src]="imgUrl" [alt]="section.description" class="slide-image" loading="lazy"/>
+        <div class="hero-content" *ngIf="currentSlideIndex === getActiveSlides(section).indexOf(imgUrl)">
           <div class="animated-text">{{animatedText}}</div>
           <div class="hero-subtitle">{{section.description}}</div>
           <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
@@ -20,27 +14,17 @@
       </div>
     </div>
 
-    <!-- Slider navigation buttons -->
-    <button class="slider-nav left" (click)="prevSlide()" style="will-change: transform;">
-      <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <button class="slider-nav right" (click)="nextSlide()" style="will-change: transform;">
-      <span class="material-symbols-outlined">chevron_right</span>
-    </button>
+    <button class="slider-nav left" (click)="prevSlide()"><span class="material-symbols-outlined">chevron_left</span></button>
+    <button class="slider-nav right" (click)="nextSlide()"><span class="material-symbols-outlined">chevron_right</span></button>
 
-    <!-- Dots -->
     <div class="slider-dots">
-      <span *ngFor="let dot of getActiveSlides(section); let i = index"
-            [class.active]="i === currentSlideIndex"
-            (click)="goToSlide(i)"></span>
+      <span *ngFor="let dot of getActiveSlides(section); let i = index" [class.active]="i === currentSlideIndex" (click)="goToSlide(i)"></span>
     </div>
   </div>
 </section>
 
 <!-- MAIN CONTENT -->
 <div class="home-container">
-
-  <!-- CATEGORY SECTIONS -->
   <div class="category-sections-wrapper">
     <ng-container *ngFor="let section of filteredOtherSections">
       <div class="category-section">
@@ -54,16 +38,13 @@
     </ng-container>
   </div>
 
-  <!-- PRODUCTS SECTION -->
   <section class="products-section" id="products-section">
     <div class="products-header">
       <h2>Our Featured Products</h2>
       <hr class="section-separator" />
     </div>
 
-    <!-- FILTER BAR -->
     <div class="filter-bar">
-      <!-- Category dropdown -->
       <div class="dropup">
         <select (change)="onCategoryChange($event)" [ngClass]="{'selected': selectedCategoryId}">
           <option value="">All Categories</option>
@@ -73,19 +54,11 @@
         </select>
       </div>
 
-      <!-- Search input -->
       <div class="Search-input">
-        <input
-          type="search"
-          placeholder="Search products..."
-          [(ngModel)]="searchTerm"
-          (keyup)="onSearch()"
-          aria-label="Search products"
-        />
+        <input type="search" placeholder="Search products..." [(ngModel)]="searchTerm" (keyup)="onSearch()" aria-label="Search products"/>
       </div>
     </div>
 
-    <!-- NO PRODUCTS FOUND -->
     <div *ngIf="Product.length === 0" class="no-products">
       <div class="no-products-content">
         <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Products" />
@@ -95,19 +68,15 @@
       </div>
     </div>
 
-    <!-- PRODUCT CARDS -->
     <div *ngIf="Product.length > 0" class="product-container">
       <div *ngFor="let product of Product; trackBy: trackByProductId" class="product-card">
         <div class="out-of-stock" *ngIf="product.quantity <= 0">Out of Stock</div>
-        
         <button class="wishlist-btn" (click)="addToWishlist(product.id)">
           <span class="material-symbols-outlined">favorite</span>
         </button>
-
         <div class="image-container">
           <img [src]="product.imageUrl" [alt]="product.name" loading="lazy"/>
         </div>
-        
         <div class="content">
           <h4>{{product.name}}</h4>
           <div class="price">{{product.price | currency}}</div>
