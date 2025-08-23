@@ -13,7 +13,8 @@
       </picture>
       <div class="hero-content" *ngIf="i === currentSlideIndex">
         <div class="animated-text">{{animatedText}}</div>
-        <div class="hero-subtitle">{{section.description}}</div>
+        <div class="hero-subtitle">{{section.title}}</div>
+        <div class="hero-title">{{section.description}}</div>
         <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
       </div>
     </div>

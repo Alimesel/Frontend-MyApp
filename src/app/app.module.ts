@@ -19,6 +19,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { PaymentSuccessComponent } from './payment-success/payment-success.component';
 import { FooterComponent } from './footer/footer.component';
 import { AboutComponent } from './about/about.component';
+import { ContactComponent } from './contact/contact.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +32,8 @@ import { AboutComponent } from './about/about.component';
     WishComponent, 
     OrderHistoryComponent,
     FooterComponent,
-    AboutComponent
+    AboutComponent,
+    
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -56,7 +58,8 @@ import { AboutComponent } from './about/about.component';
       {path : 'wish', component : WishComponent, title :'Favorites'},
       { path: 'payment-success',  component: PaymentSuccessComponent,title: 'Payment Successful'},
       {path : 'order-history',component: OrderHistoryComponent,title : 'Order History'},
-      {path : 'about',component : AboutComponent, title:'About'}
+      {path : 'about',component : AboutComponent, title:'About'},
+      {path : 'contact', component : ContactComponent, title : 'Contact'}
     ])
   ],
   

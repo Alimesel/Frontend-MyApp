@@ -55,13 +55,6 @@ export class NavMenuComponent implements OnInit {
       this.router.navigate(['/home']);
     }
   }
-goToContact(){
-  if(this.router.url === '/home'){
-    document.getElementById('footer')?.scrollIntoView({behavior : 'smooth'})
-  }
-  else{
-    this.router.navigate(['/home'],{state:{scrollToFooter : true}});
-  }
-}
+
 
 }
