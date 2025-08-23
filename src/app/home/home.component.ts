@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Category, Product } from './../Interfaces/Product';
@@ -27,6 +27,7 @@ interface HomeSection {
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit, OnDestroy {
   Product: Product[] = [];
@@ -56,7 +57,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private DescriptionSer: DescriptionService,
     private UserAuth: UserAuthenticationService,
     private filterService: FilterService,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +103,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.textAnimationInterval = setInterval(() => {
       if (this.currentIndex < this.fullText.length) {
         this.animatedText += this.fullText[this.currentIndex++];
+        this.cdr.markForCheck(); // OnPush update
       } else {
         clearInterval(this.textAnimationInterval);
       }
@@ -116,35 +119,32 @@ export class HomeComponent implements OnInit, OnDestroy {
           description: section.description,
           paragraph: section.paragraph,
           imageUrl: `${environment.apiUrl.replace('/api', '')}/${section.imageUrl}`,
-          imageUrl2: section.imageUrl2
-            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl2}`
-            : '',
-          imageUrl3: section.imageUrl3
-            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl3}`
-            : '',
-          imageUrl4: section.imageUrl4
-            ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl4}`
-            : '',
+          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl2}` : '',
+          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl3}` : '',
+          imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl4}` : '',
           displayOrder: section.displayOrder,
           isActive: section.isActive,
         }));
 
-        this.filteredHeroSections = this.homeSections.filter(
-          (s) => s.displayOrder === 1
-        );
-        this.filteredOtherSections = this.homeSections.filter(
-          (s) => s.displayOrder > 1
-        );
+        this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
+        this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
+
+        // Preload first hero image dynamically for LCP
+        if (this.filteredHeroSections[0]) {
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.href = this.filteredHeroSections[0].imageUrl;
+          document.head.appendChild(link);
+        }
 
         if (this.filteredHeroSections[0]?.paragraph)
           this.startTextAnimation(this.filteredHeroSections[0].paragraph);
 
-        if (
-          this.filteredHeroSections[0] &&
-          this.getActiveSlides(this.filteredHeroSections[0]).length > 1
-        ) {
+        if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1) {
           this.startAutoSlide();
         }
+        this.cdr.markForCheck();
       },
       error: (error) => console.error('Failed to load home sections:', error),
     });
@@ -155,12 +155,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getActiveSlides(section: HomeSection): string[] {
-    return [
-      section.imageUrl,
-      section.imageUrl2,
-      section.imageUrl3,
-      section.imageUrl4,
-    ].filter((url) => !!url);
+    return [section.imageUrl, section.imageUrl2, section.imageUrl3, section.imageUrl4].filter(url => !!url);
   }
 
   startAutoSlide() {
@@ -171,16 +166,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (!this.filteredHeroSections.length) return;
     const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
     this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
+    this.cdr.markForCheck();
   }
 
   prevSlide() {
     if (!this.filteredHeroSections.length) return;
     const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
     this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
+    this.cdr.markForCheck();
   }
 
   goToSlide(index: number) {
     this.currentSlideIndex = index;
+    this.cdr.markForCheck();
   }
 
   // Categories & Products

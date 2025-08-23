@@ -1,13 +1,14 @@
 <!-- HERO SECTION -->
 <section *ngFor="let section of filteredHeroSections" class="hero-section">
   <div class="slider-container" *ngIf="getActiveSlides(section).length > 0">
-    <div class="slider-track"
-         [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'"
+    <div class="slider-track" 
+         [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'" 
          style="will-change: transform;">
       <div class="slide" *ngFor="let imgUrl of getActiveSlides(section); let i = index">
-        <img [src]="imgUrl" [alt]="section.description" class="slide-image"
-             width="1920" height="1080"
-             [attr.loading]="i === 0 ? 'eager' : 'lazy'"/>
+        <img [src]="imgUrl" [attr.loading]="i === 0 ? 'eager' : 'lazy'" 
+             [attr.fetchpriority]="i === 0 ? 'high' : null" 
+             [alt]="section.description" class="slide-image"
+             width="1920" height="1080"/>
         <div class="hero-content" *ngIf="currentSlideIndex === i">
           <div class="animated-text">{{animatedText}}</div>
           <div class="hero-subtitle">{{section.description}}</div>
@@ -25,7 +26,7 @@
 
     <div class="slider-dots">
       <span *ngFor="let dot of getActiveSlides(section); let i = index"
-            [class.active]="i === currentSlideIndex"
+            [class.active]="i === currentSlideIndex" 
             (click)="goToSlide(i)"></span>
     </div>
   </div>
@@ -33,12 +34,11 @@
 
 <!-- MAIN CONTENT -->
 <div class="home-container">
-  <!-- Category Sections -->
   <div class="category-sections-wrapper">
     <ng-container *ngFor="let section of filteredOtherSections">
       <div class="category-section">
         <div class="category-image-wrapper">
-          <img [src]="section.imageUrl" [alt]="section.description"
+          <img [src]="section.imageUrl" [alt]="section.description" 
                class="category-image" width="600" height="300" loading="lazy"/>
           <div class="image-overlay">
             <button class="overlay-btn" (click)="scrollToProducts()">
@@ -50,45 +50,36 @@
     </ng-container>
   </div>
 
-  <!-- Products Section -->
   <section class="products-section" id="products-section">
     <div class="products-header">
       <h2>Our Featured Products</h2>
       <hr class="section-separator" />
     </div>
 
-    <!-- Filter Bar -->
     <div class="filter-bar">
       <div class="dropup">
-        <select (change)="onCategoryChange($event)"
-                [ngClass]="{'selected': selectedCategoryId}">
+        <select (change)="onCategoryChange($event)" [ngClass]="{'selected': selectedCategoryId}">
           <option value="">All Categories</option>
-          <option *ngFor="let cat of Category" [value]="cat.id"
-                  [ngClass]="{'red-text': selectedCategoryId === cat.id}">
+          <option *ngFor="let cat of Category" [value]="cat.id" [ngClass]="{'red-text': selectedCategoryId === cat.id}">
             {{cat.name}}
           </option>
         </select>
       </div>
 
       <div class="Search-input">
-        <input type="search" placeholder="Search products..."
-               [(ngModel)]="searchTerm" (keyup)="onSearch()"
-               aria-label="Search products"/>
+        <input type="search" placeholder="Search products..." [(ngModel)]="searchTerm" (keyup)="onSearch()" aria-label="Search products"/>
       </div>
     </div>
 
-    <!-- No Products Found -->
     <div *ngIf="Product.length === 0" class="no-products">
       <div class="no-products-content">
-        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
-             alt="No Products" width="120" height="120"/>
+        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Products" width="120" height="120"/>
         <h3>No products found</h3>
         <p>We couldn’t find any products matching your search or selected category.</p>
         <button class="back-btn" (click)="loadProducts()">Browse All Products</button>
       </div>
     </div>
 
-    <!-- Product Cards -->
     <div *ngIf="Product.length > 0" class="product-container">
       <div *ngFor="let product of Product; trackBy: trackByProductId" class="product-card">
         <div class="out-of-stock" *ngIf="product.quantity <= 0">Out of Stock</div>
@@ -96,8 +87,7 @@
           <span class="material-symbols-outlined">favorite</span>
         </button>
         <div class="image-container">
-          <img [src]="product.imageUrl" [alt]="product.name"
-               width="250" height="250" loading="lazy"/>
+          <img [src]="product.imageUrl" [alt]="product.name" width="250" height="250" loading="lazy"/>
         </div>
         <div class="content">
           <h4>{{product.name}}</h4>
