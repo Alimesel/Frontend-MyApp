@@ -95,6 +95,7 @@ export class LoginComponent implements OnInit {
         const msg = err.error;
         if (msg.includes('Username')) this.toastr.error('Username is already taken');
         else if (msg.includes('Email')) this.toastr.error('Email is already used');
+         else if (msg.includes('Phone')) this.toastr.error('Phone number is already used');
         else if (msg.includes('Password')) this.toastr.error('Password invalid');
         else this.toastr.error('Registration failed');
       }
