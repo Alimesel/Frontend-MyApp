@@ -8,14 +8,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <!-- Fonts & Icons -->
+    <!-- SEO -->
+    <meta name="description" content="Discover our latest products, categories, and offers with fast delivery and secure checkout." />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Global Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Preload first hero image (replace URL dynamically if needed) -->
-    <link rel="preload" as="image" href="assets/images/hero1.jpg" fetchpriority="high">
+    <!-- Material Symbols: preload for performance -->
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+          onload="this.rel='stylesheet'">
+    <noscript>
+      <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+    </noscript>
 
+    <!-- Preload first hero image for LCP -->
+    <link rel="preload" as="image" href="assets/HomeCloth3.webp" fetchpriority="high">
   </head>
+
   <body class="mat-typography">
     <app-root>Loading...</app-root>
   </body>
