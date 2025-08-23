@@ -39,10 +39,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 0.5s ease;
+  aspect-ratio: 16/9;
 }
-
 .slide-image:hover {
   transform: scale(1.05);
 }
@@ -66,13 +64,16 @@
 }
 
 .animated-text {
+  display: inline-block;
+  width: 30ch;   /* reserve space to prevent CLS */
+  max-width: 100%;
   font-size: 2rem;
   font-weight: 700;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
   overflow: hidden;
   white-space: nowrap;
   border-right: 2px solid #fff;
-  animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+  animation: typing 3s steps(30, end), blink-caret 0.75s step-end infinite;
 }
 
 @keyframes typing { from { width: 0; } to { width: 100%; } }
@@ -170,11 +171,12 @@
   transition: transform 0.3s ease;
 }
 
+
 .category-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  aspect-ratio: 2/1;
 }
 
 .category-image-wrapper:hover .category-image { transform: scale(1.03); }
@@ -246,7 +248,7 @@
 }
 
 .image-container { height: 200px; overflow: hidden; }
-.image-container img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease; }
+.image-container img { width: 100%; height: 100%; object-fit: contain;   aspect-ratio: 1/1; }
 .product-card:hover .image-container img { transform: scale(1.1); }
 
 .content { padding: 15px; text-align: center; }
