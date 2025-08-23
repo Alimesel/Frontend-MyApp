@@ -2,15 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>MyApp</title>
+    <title>Abbali – Clothes, Shoes & Accessories Online</title>
     <base href="/" />
 
+    <!-- Responsive & Theme -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta name="theme-color" content="#ffffff" />
 
     <!-- SEO -->
-    <meta name="description" content="Discover our latest products, categories, and offers with fast delivery and secure checkout." />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Abbali offers the latest clothes, shoes, and accessories with fast delivery and secure checkout." />
+    <meta name="keywords" content="clothes, shoes, accessories, online shopping, Abbali, fashion, secure checkout" />
+    <meta name="author" content="Abbali" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="Abbali – Clothes, Shoes & Accessories Online" />
+    <meta property="og:description" content="Abbali offers the latest clothes, shoes, and accessories with fast delivery and secure checkout." />
+    <meta property="og:image" content="https://abbali.vercel.app/assets/Logo.webp" />
+    <meta property="og:url" content="https://abbali.vercel.app/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Abbali – Clothes, Shoes & Accessories Online" />
+    <meta name="twitter:description" content="Abbali offers the latest clothes, shoes, and accessories with fast delivery and secure checkout." />
+    <meta name="twitter:image" content="https://abbali.vercel.app/assets/Logo.webp" />
+    <meta name="twitter:site" content="@alimeslmeni_so" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/Logo.webp" />
 
     <!-- Global Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -24,8 +43,22 @@
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
     </noscript>
 
-    <!-- Preload first hero image for LCP -->
+    <!-- Preload critical hero image for LCP -->
     <link rel="preload" as="image" href="assets/HomeCloth3.webp" fetchpriority="high">
+
+    <!-- Structured Data JSON-LD for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Abbali",
+      "url": "https://abbali.vercel.app/",
+      "logo": "https://abbali.vercel.app/assets/Logo.webp",
+      "sameAs": [
+        "https://www.instagram.com/alimeslmeni_so"
+      ]
+    }
+    </script>
   </head>
 
   <body class="mat-typography">
