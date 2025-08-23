@@ -38,9 +38,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   error: string | null = null;
 
   currentSlideIndex = 0;
-  private slideInterval?: any;
+  private fadeInterval?: any;
   private filterSubscription?: Subscription;
-
   animatedText = '';
   fullText = '';
   currentIndex = 0;
@@ -74,10 +73,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.filterSubscription?.unsubscribe();
-    clearInterval(this.slideInterval);
+    clearInterval(this.fadeInterval);
     clearInterval(this.textAnimationInterval);
     clearTimeout(this.searchDebounce);
+    this.filterSubscription?.unsubscribe();
   }
 
   // Search
@@ -93,9 +92,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
   }
 
-  // Hero Slider
+  // Hero Fade Slideshow
   startTextAnimation(text: string) {
-    this.fullText = text;
+    this.fullText = text || '';
     this.currentIndex = 0;
     this.animatedText = '';
     clearInterval(this.textAnimationInterval);
@@ -114,35 +113,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.Service.GetHomeSections().subscribe({
       next: (data: any) => {
         this.homeSections = data.map((section: any) => ({
-          id: section.id,
-          title: section.title,
-          description: section.description,
-          paragraph: section.paragraph,
-          imageUrl: `${environment.apiUrl.replace('/api', '')}/${section.imageUrl}`,
-          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl2}` : '',
-          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl3}` : '',
-          imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api', '')}/${section.imageUrl4}` : '',
-          displayOrder: section.displayOrder,
-          isActive: section.isActive,
+          ...section,
+          imageUrl: `${environment.apiUrl.replace('/api','')}/${section.imageUrl}`,
+          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}` : '',
+          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}` : '',
+          imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl4}` : '',
         }));
 
         this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
         this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
 
-        // Preload first hero image dynamically for LCP
-        if (this.filteredHeroSections[0]) {
-          const link = document.createElement('link');
-          link.rel = 'preload';
-          link.as = 'image';
-          link.href = this.filteredHeroSections[0].imageUrl;
-          document.head.appendChild(link);
-        }
-
         if (this.filteredHeroSections[0]?.paragraph)
           this.startTextAnimation(this.filteredHeroSections[0].paragraph);
 
         if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1) {
-          this.startAutoSlide();
+          this.startFadeSlideshow();
         }
         this.cdr.markForCheck();
       },
@@ -150,35 +135,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  scrollToProducts() {
-    this.viewportScroller.scrollToAnchor('products-section');
-  }
-
   getActiveSlides(section: HomeSection): string[] {
     return [section.imageUrl, section.imageUrl2, section.imageUrl3, section.imageUrl4].filter(url => !!url);
   }
 
-  startAutoSlide() {
-    this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+  startFadeSlideshow() {
+    this.fadeInterval = setInterval(() => {
+      if (!this.filteredHeroSections.length) return;
+      const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
+      this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
+      this.cdr.markForCheck();
+    }, 2000); // every 2 seconds
   }
 
-  nextSlide() {
-    if (!this.filteredHeroSections.length) return;
-    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
-    this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
-    this.cdr.markForCheck();
-  }
-
-  prevSlide() {
-    if (!this.filteredHeroSections.length) return;
-    const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
-    this.currentSlideIndex = (this.currentSlideIndex - 1 + slides) % slides;
-    this.cdr.markForCheck();
-  }
-
-  goToSlide(index: number) {
-    this.currentSlideIndex = index;
-    this.cdr.markForCheck();
+  scrollToProducts() {
+    this.viewportScroller.scrollToAnchor('products-section');
   }
 
   // Categories & Products

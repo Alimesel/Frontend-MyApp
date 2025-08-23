@@ -1,33 +1,21 @@
 <!-- HERO SECTION -->
 <section *ngFor="let section of filteredHeroSections" class="hero-section">
-  <div class="slider-container" *ngIf="getActiveSlides(section).length > 0">
-    <div class="slider-track" 
-         [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'" 
-         style="will-change: transform;">
-      <div class="slide" *ngFor="let imgUrl of getActiveSlides(section); let i = index">
-        <img [src]="imgUrl" [attr.loading]="i === 0 ? 'eager' : 'lazy'" 
-             [attr.fetchpriority]="i === 0 ? 'high' : null" 
-             [alt]="section.description" class="slide-image"
-             width="1920" height="1080"/>
-        <div class="hero-content" *ngIf="currentSlideIndex === i">
-          <div class="animated-text">{{animatedText}}</div>
-          <div class="hero-subtitle">{{section.description}}</div>
-          <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
-        </div>
+  <div class="hero-fade-container" *ngIf="getActiveSlides(section).length > 0">
+    <div class="hero-slide" 
+         *ngFor="let imgUrl of getActiveSlides(section); let i = index"
+         [class.active]="i === currentSlideIndex">
+      <picture>
+        <img [src]="imgUrl" 
+             [alt]="section.description" 
+             width="1920" height="1080" 
+             [attr.loading]="i === 0 ? 'eager' : 'lazy'" 
+             [attr.fetchpriority]="i === 0 ? 'high' : null"/>
+      </picture>
+      <div class="hero-content" *ngIf="i === currentSlideIndex">
+        <div class="animated-text">{{animatedText}}</div>
+        <div class="hero-subtitle">{{section.description}}</div>
+        <button class="explore-btn" (click)="scrollToProducts()">Explore</button>
       </div>
-    </div>
-
-    <button class="slider-nav left" (click)="prevSlide()">
-      <span class="material-symbols-outlined">chevron_left</span>
-    </button>
-    <button class="slider-nav right" (click)="nextSlide()">
-      <span class="material-symbols-outlined">chevron_right</span>
-    </button>
-
-    <div class="slider-dots">
-      <span *ngFor="let dot of getActiveSlides(section); let i = index"
-            [class.active]="i === currentSlideIndex" 
-            (click)="goToSlide(i)"></span>
     </div>
   </div>
 </section>
