@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
-import { LoginUser, UserDTO } from 'src/app/Interfaces/User';
-import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
+import { CartserviceService } from 'src/app/Service/cartservice.service';
+import { LoginUser, UserDTO } from 'src/app/Interfaces/User';
 
 @Component({
   selector: 'app-auth',
@@ -16,8 +15,6 @@ import { UserAuthenticationService } from 'src/app/Service/user-authentication.s
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   registerForm!: FormGroup;
-  loginSubmitted = false;
-  registerSubmitted = false;
 
   constructor(
     private fb: FormBuilder,
@@ -25,100 +22,109 @@ export class LoginComponent implements OnInit {
     private userAuth: UserAuthenticationService,
     private router: Router,
     private toastr: ToastrService,
-    private CartSer : CartserviceService
+    private CartSer: CartserviceService
   ) {}
 
   ngOnInit(): void {
-    // Login form
+    window.scrollTo({top : 0, behavior :'smooth'})
+    // Custom validators
+    const forbiddenChars = (control: AbstractControl) =>
+      /<|>|{|}|\(|\)|;|script/i.test(control.value) ? { forbidden: true } : null;
+
+    const passwordValidator = (control: AbstractControl) =>
+      /^[A-Za-z0-9]+$/.test(control.value) ? null : { invalidPassword: true };
+
+    const gmailValidator = (control: AbstractControl) =>
+      control.value?.endsWith('@gmail.com') ? null : { invalidEmail: true };
+
+    const lebanesePhoneValidator = (control: AbstractControl) =>
+      /^(03|70|71|76|78|79)[0-9]{6}$/.test(control.value) ? null : { invalidPhone: true };
+
+    // LOGIN FORM
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, forbiddenChars]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
-    // Register form
+    // REGISTER FORM
     this.registerForm = this.fb.group({
-      firstname: [''],
-      lastname: [''],
-      username: ['', [Validators.required]],
-      Email: ['', [Validators.required, Validators.email]],
-      Password: ['', [Validators.required, Validators.minLength(6)]],
-      PhoneNumber: ['', [Validators.required]],
-      Country: [''],
-      City: ['']
+      firstname: ['', [Validators.required, forbiddenChars]],
+      lastname: ['', [Validators.required, forbiddenChars]],
+      username: ['', [Validators.required, forbiddenChars]],
+      Email: ['', [Validators.required, Validators.email, gmailValidator]],
+      Password: ['', [Validators.required, Validators.minLength(6), passwordValidator]],
+      PhoneNumber: ['', [Validators.required, lebanesePhoneValidator]],
+      Country: ['', [forbiddenChars]],
+      City: ['', [forbiddenChars]]
     });
   }
 
-  // Login
-onLogin() {
-  this.loginSubmitted = true;
-  if (this.loginForm.valid) {
-    const loginUser: LoginUser = this.loginForm.value;
-    this.service.UserLogin(loginUser).subscribe({
-      next: (response: { token: string }) => {
-        this.userAuth.SetToken(response.token);
+  // LOGIN
+  onLogin() {
+    if (this.loginForm.invalid) return this.showErrors(this.loginForm);
 
-        // Merge guest cart
-        const guestCart = this.CartSer.getLocalItems();
-        if (guestCart.length > 0) {
-          this.CartSer.addMultipleServerCart(guestCart).subscribe({
-            next: () => {
-              this.CartSer.ResetCart();
-              this.CartSer.updateCartCount().subscribe();
-            },
-            error: err => console.error('Failed to merge guest cart', err)
-          });
-        }
-
+    this.service.UserLogin(this.loginForm.value).subscribe({
+      next: res => {
+        this.userAuth.SetToken(res.token);
+        this.mergeCart();
         this.router.navigate(['/home']);
       },
-      error: (error) => {
-        const message = error.error;
-        if (error.status === 404 && message === 'Username not Found') {
+      error: err => {
+        if (err.status === 404 && err.error === 'Username not Found') {
           this.toastr.error('Username not found');
-        } else if (error.status === 400 && message === 'Invalid Password') {
-          this.toastr.error('Invalid Password');
+        } else if (err.status === 400 && err.error === 'Invalid Password') {
+          this.toastr.error('Incorrect password');
         } else {
-          this.toastr.error('Login Failed');
+          this.toastr.error('Login failed');
         }
       }
     });
-  } else {
-    this.loginForm.markAllAsTouched();
   }
-}
 
+  // REGISTER
+  onRegister() {
+    if (this.registerForm.invalid) return this.showErrors(this.registerForm);
 
-  // Register
-onRegister() {
-  this.registerSubmitted = true;
-  if (this.registerForm.valid) {
-    const registerUser: UserDTO = this.registerForm.value;
-    this.service.UserRegister(registerUser).subscribe({
-      next: (response: { token: string }) => {
-        this.userAuth.SetToken(response.token);
-
-        // Merge guest cart
-        const guestCart = this.CartSer.getLocalItems();
-        if (guestCart.length > 0) {
-          this.CartSer.addMultipleServerCart(guestCart).subscribe({
-            next: () => {
-              this.CartSer.ResetCart();
-              this.CartSer.updateCartCount().subscribe();
-            },
-            error: err => console.error('Failed to merge guest cart', err)
-          });
-        }
-
+    this.service.UserRegister(this.registerForm.value).subscribe({
+      next: res => {
+        this.userAuth.SetToken(res.token);
+        this.mergeCart();
         this.router.navigate(['/home']);
       },
-      error: (err) => {
-        console.error('Register Failed', err);
-        this.toastr.error('Registration Failed');
+      error: err => {
+        const msg = err.error;
+        if (msg.includes('Username')) this.toastr.error('Username is already taken');
+        else if (msg.includes('Email')) this.toastr.error('Email is already used');
+        else if (msg.includes('Password')) this.toastr.error('Password invalid');
+        else this.toastr.error('Registration failed');
       }
     });
-  } else {
-    this.registerForm.markAllAsTouched();
   }
-}
 
+  // Merge guest cart with server cart after login/register
+  private mergeCart() {
+    const guestCart = this.CartSer.getLocalItems();
+    if (guestCart.length > 0) {
+      this.CartSer.addMultipleServerCart(guestCart).subscribe(() => {
+        this.CartSer.ResetCart();
+        this.CartSer.updateCartCount().subscribe();
+      });
+    }
+  }
+
+  // Show validation errors
+  private showErrors(form: FormGroup) {
+    Object.entries(form.controls).forEach(([key, control]) => {
+      if (control.errors) {
+        if (control.errors['required']) this.toastr.error(`${key} is required`);
+        else if (control.errors['email']) this.toastr.error('Invalid email');
+        else if (control.errors['invalidEmail']) this.toastr.error('Email must be @gmail.com');
+        else if (control.errors['minlength']) this.toastr.error(`${key} is too short`);
+        else if (control.errors['pattern'] && key !== 'PhoneNumber') this.toastr.error(`${key} is invalid`);
+        else if (control.errors['invalidPhone']) this.toastr.error('Phone number must be a valid 8-digit Lebanese number starting with 03,70,71,76,78,79');
+        else if (control.errors['forbidden']) this.toastr.error(`${key} contains forbidden characters`);
+        else if (control.errors['invalidPassword']) this.toastr.error('Password must contain only letters and numbers');
+      }
+    });
+  }
 }
