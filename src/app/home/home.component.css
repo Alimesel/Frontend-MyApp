@@ -1,3 +1,41 @@
+/* ================== LOADING STATES ================== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.products-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 15px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff4b2b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ================== HERO SECTION ================== */
 .hero-section {
   position: relative;
@@ -23,8 +61,18 @@
   transition: opacity 1s ease-in-out;
 }
 .hero-slide.active { opacity:1; z-index:1; }
-.hero-slide img { width:100%; height:100%; object-fit:cover; }
+.hero-slide img { 
+  width:100%; 
+  height:100%; 
+  object-fit:cover;
+  transition: opacity 0.3s ease;
+}
 
+/* Add blur effect while images are loading */
+.hero-slide img:not([loaded]) {
+  opacity: 0;
+  filter: blur(10px);
+}
 
 .hero-content {
   position: absolute;
@@ -36,8 +84,8 @@
   z-index: 2;
   padding: 30px 20px;
   border-radius: 15px;
-  background: rgba(62, 61, 61, 0.35); /* subtle dark overlay */
-  backdrop-filter: blur(0.5px); /* frosted glass effect */
+  background: rgba(62, 61, 61, 0.35);
+  backdrop-filter: blur(0.5px);
   max-width: 90%;
 }
 
@@ -68,7 +116,7 @@
   font-family: 'Montserrat', 'Arial', sans-serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #ffd700; /* gold highlight */
+  color: #ffd700;
   text-shadow: 0 2px 8px rgba(0,0,0,0.6);
   margin-bottom: 12px;
   letter-spacing: 1px;
@@ -124,6 +172,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+/* Add blur effect while images are loading */
+.category-image:not([loaded]) {
+  opacity: 0;
+  filter: blur(10px);
 }
 .image-overlay {
   position: absolute;
@@ -242,13 +296,19 @@
 .image-container {
   height:200px;
   overflow:hidden;
+  position: relative;
 } 
 .image-container img {
   width:100%;
   height:100%;
   object-fit:contain;
   aspect-ratio:1/1;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+/* Add blur effect while images are loading */
+.image-container img:not([loaded]) {
+  opacity: 0;
+  filter: blur(10px);
 }
 .product-card:hover .image-container img { transform: scale(1.1); }
 
@@ -345,10 +405,11 @@
 /* ================== RESPONSIVE ================== */
 @media (max-width:1024px){.category-section{flex:1 1 48%;}}
 
-@media (max-width:768px){
-  .animated-text{font-size:1.5rem;}
-  .hero-title{font-size:2rem;}
-  .hero-subtitle{font-size:1rem;}
+@media (max-width:768px)
+{ .hero-title{font-size:2rem;} 
+.hero-subtitle{font-size:1rem;} 
+.animated-text{font-size:1.5rem;}
+ .hero-section{height:50vh;} 
   .explore-btn{padding:10px 20px;font-size:0.9rem;}
   .category-image-wrapper{height:220px;}
   .product-container{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
@@ -357,11 +418,10 @@
 }
 
 @media (max-width:480px){
-  .hero-section { height:60vh; } /* smaller hero */
-  .animated-text{font-size:1.2rem;}
+  .hero-content{height: 100%;border-radius: 0px;}
+
+  .hero-section { height:60vh; }
   .explore-btn{padding:12px 50px; font-size:1rem;}
-  .hero-title{font-size:1.4rem;}
-  .hero-subtitle{font-size:0.9rem;}
   .category-sections-wrapper{flex-direction:column;gap:20px;}
   .category-section{flex:1 1 100%;}
   .overlay-btn{padding:8px 15px;font-size:0.85rem;}
