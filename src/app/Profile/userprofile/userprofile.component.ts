@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr'; // <-- Import ToastrService
 import { UserDTO } from 'src/app/Interfaces/User';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
+
 @Component({
   selector: 'app-userprofile',
   templateUrl: './userprofile.component.html',
@@ -20,42 +22,53 @@ export class UserprofileComponent implements OnInit {
   };
 
   isEditing: boolean = false;
-  originalProfile: UserDTO | null = null; // Initialize as null
+  originalProfile: UserDTO | null = null;
 
   constructor(
-   
-    private UserAuth : UserAuthenticationService,
-    private Service : ServiceService
+    private UserAuth: UserAuthenticationService,
+    private Service: ServiceService,
+    private toastr: ToastrService 
   ) {}
 
   ngOnInit(): void {
-   this.UserAuth.GetUserProfile().subscribe(data => {
-     if(data){
-       this.profile = data;
-       this.originalProfile = {...data }; 
-     }
-   })
+    window.scroll({top: 0, behavior :'smooth'});
+    this.UserAuth.GetUserProfile().subscribe(data => {
+      if(data){
+        this.profile = data;
+        this.originalProfile = {...data }; 
+      }
+    });
   }
 
- onsubmit(){
-   this.Service.ProfileUpdate(this.profile).subscribe(data => {
-     if(data){
-       console.log('Profile Updated');
-       this.isEditing = false;
-     }
-   })
- }
+  onsubmit() {
+    this.Service.ProfileUpdate(this.profile).subscribe({
+      next: (data) => {
+        if (data) {
+          this.isEditing = false;
+          this.toastr.success('Profile updated successfully'); // <-- Works now
+        }
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          const msg = err.error as string;
+          if (msg.includes('Email')) this.toastr.error('Email is already taken');
+          else if (msg.includes('Phone')) this.toastr.error('Phone number is already used');
+          else this.toastr.error('Update failed');
+        } else {
+          this.toastr.error('Update failed');
+        }
+      }
+    });
+  }
 
   enableEditing() {
     this.isEditing = true;
   }
 
-
   cancelEditing() {
-    if (this.originalProfile) { // Ensure originalProfile is not null
-      this.profile = { ...this.originalProfile }; // Revert to original data
+    if (this.originalProfile) {
+      this.profile = { ...this.originalProfile };
     }
-    this.isEditing = false; // Exit editing mode
+    this.isEditing = false;
   }
-  
 }

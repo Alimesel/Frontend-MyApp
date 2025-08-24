@@ -14,6 +14,7 @@ export class OrderHistoryComponent implements OnInit {
   constructor(private service: ServiceService) {}
 
   ngOnInit(): void {
+    window.scroll({top : 0,behavior : 'smooth'})
     this.service.OrderHistory().subscribe({
       next: (data: Orders) => {
         this.orders = data;

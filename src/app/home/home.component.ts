@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { Category, Product } from './../Interfaces/Product';
 import { CartserviceService } from '../Service/cartservice.service';
 import { DescriptionService } from '../Service/description.service';
@@ -9,6 +9,7 @@ import { ServiceService } from '../Service/service.service';
 import { FilterService } from '../Service/filter.service';
 import { environment } from 'src/environments/environment.prod';
 import { ViewportScroller } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface HomeSection {
   id: number;
@@ -57,18 +58,59 @@ export class HomeComponent implements OnInit, OnDestroy {
     private UserAuth: UserAuthenticationService,
     private filterService: FilterService,
     private viewportScroller: ViewportScroller,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+      private snackBar: MatSnackBar    
   ) {}
 
   ngOnInit(): void {
-    this.loadHomeSections();
-    this.loadCategories();
-    this.loadProducts();
+    // Parallel fetch for hero sections, categories, and products
+    forkJoin([
+      this.Service.GetHomeSections(),
+      this.Service.GetCategory(),
+      this.Service.GetProducts()
+    ]).subscribe({
+      next: ([sectionsData, categoriesData, productsData]: any) => {
 
-    this.filterSubscription = this.filterService.filter$.subscribe(
-      ({ categoryId, searchTerm }) => {
-        this.loadProducts(categoryId, searchTerm);
+        // Home Sections
+        this.homeSections = sectionsData.map((s: any) => ({
+          ...s,
+          imageUrl: `${environment.apiUrl.replace('/api','')}/${s.imageUrl}`,
+          imageUrl2: s.imageUrl2 ? `${environment.apiUrl.replace('/api','')}/${s.imageUrl2}` : '',
+          imageUrl3: s.imageUrl3 ? `${environment.apiUrl.replace('/api','')}/${s.imageUrl3}` : '',
+          imageUrl4: s.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${s.imageUrl4}` : '',
+        }));
+        this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
+        this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
+
+        if (this.filteredHeroSections[0]?.paragraph)
+          this.startTextAnimation(this.filteredHeroSections[0].paragraph);
+
+        if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1)
+          this.startFadeSlideshow();
+
+        // Categories
+        this.Category = categoriesData.map((c: any) => ({
+          ...c,
+          image: `${environment.apiUrl.replace('/api','')}/${c.image}`,
+        }));
+
+        // Products
+        this.Product = productsData.map((p: any) => ({
+          ...p,
+          imageUrl: `${environment.apiUrl.replace('/api','')}/${p.imageUrl}`
+        }));
+
+        this.cdr.markForCheck(); // OnPush update
+      },
+      error: (err) => {
+        console.error('Home load error:', err);
+        this.error = 'Failed to load home content';
       }
+    });
+
+    // Listen for filter changes
+    this.filterSubscription = this.filterService.filter$.subscribe(
+      ({ categoryId, searchTerm }) => this.loadProducts(categoryId, searchTerm)
     );
   }
 
@@ -79,62 +121,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.filterSubscription?.unsubscribe();
   }
 
-  // Search
-  onSearch(): void {
-    clearTimeout(this.searchDebounce);
-    this.searchDebounce = setTimeout(() => {
-      this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
-    }, 350);
-  }
-
-  onCategoryChange(event: any): void {
-    this.selectedCategoryId = +event.target.value || null;
-    this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
-  }
-
-  // Hero Fade Slideshow
-  startTextAnimation(text: string) {
-    this.fullText = text || '';
-    this.currentIndex = 0;
-    this.animatedText = '';
-    clearInterval(this.textAnimationInterval);
-
-    this.textAnimationInterval = setInterval(() => {
-      if (this.currentIndex < this.fullText.length) {
-        this.animatedText += this.fullText[this.currentIndex++];
-        this.cdr.markForCheck(); // OnPush update
-      } else {
-        clearInterval(this.textAnimationInterval);
-      }
-    }, 30);
-  }
-
-  loadHomeSections() {
-    this.Service.GetHomeSections().subscribe({
-      next: (data: any) => {
-        this.homeSections = data.map((section: any) => ({
-          ...section,
-          imageUrl: `${environment.apiUrl.replace('/api','')}/${section.imageUrl}`,
-          imageUrl2: section.imageUrl2 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl2}` : '',
-          imageUrl3: section.imageUrl3 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl3}` : '',
-          imageUrl4: section.imageUrl4 ? `${environment.apiUrl.replace('/api','')}/${section.imageUrl4}` : '',
-        }));
-
-        this.filteredHeroSections = this.homeSections.filter(s => s.displayOrder === 1);
-        this.filteredOtherSections = this.homeSections.filter(s => s.displayOrder > 1);
-
-        if (this.filteredHeroSections[0]?.paragraph)
-          this.startTextAnimation(this.filteredHeroSections[0].paragraph);
-
-        if (this.filteredHeroSections[0] && this.getActiveSlides(this.filteredHeroSections[0]).length > 1) {
-          this.startFadeSlideshow();
-        }
-        this.cdr.markForCheck();
-      },
-      error: (error) => console.error('Failed to load home sections:', error),
-    });
-  }
-
+  // Hero Slideshow
   getActiveSlides(section: HomeSection): string[] {
     return [section.imageUrl, section.imageUrl2, section.imageUrl3, section.imageUrl4].filter(url => !!url);
   }
@@ -145,74 +132,89 @@ export class HomeComponent implements OnInit, OnDestroy {
       const slides = this.getActiveSlides(this.filteredHeroSections[0]).length;
       this.currentSlideIndex = (this.currentSlideIndex + 1) % slides;
       this.cdr.markForCheck();
-    }, 2000); // every 2 seconds
+    }, 2000);
   }
 
-  scrollToProducts() {
-    this.viewportScroller.scrollToAnchor('products-section');
+  startTextAnimation(text: string) {
+    this.fullText = text || '';
+    this.currentIndex = 0;
+    this.animatedText = '';
+    clearInterval(this.textAnimationInterval);
+    this.textAnimationInterval = setInterval(() => {
+      if (this.currentIndex < this.fullText.length) {
+        this.animatedText += this.fullText[this.currentIndex++];
+        this.cdr.markForCheck();
+      } else clearInterval(this.textAnimationInterval);
+    }, 30);
   }
 
-  // Categories & Products
-  loadCategories() {
-    this.Service.GetCategory().subscribe({
-      next: (data) =>
-        (this.Category = data.map((cat: any) => ({
-          ...cat,
-          image: `${environment.apiUrl.replace('/api', '')}/${cat.image}`,
-        }))),
-      error: (error) => {
-        this.error = 'Failed to load categories';
-        console.error(error);
-      },
-    });
-  }
+  scrollToProducts() { this.viewportScroller.scrollToAnchor('products-section'); }
 
   loadProducts(categoryID?: number, search?: string) {
-    const searchTerm = search?.trim() || undefined;
-    this.Service.GetProducts(categoryID, searchTerm).subscribe({
-      next: (data) =>
-        (this.Product = data.map((product: any) => ({
-          ...product,
-          imageUrl: `${environment.apiUrl.replace('/api', '')}/${product.imageUrl}`,
-        }))),
-      error: (error) => {
-        this.error = 'Failed to load products';
-        console.error(error);
+    const term = search?.trim() || undefined;
+    this.Service.GetProducts(categoryID, term).subscribe({
+      next: (data) => {
+        this.Product = data.map((p: any) => ({
+          ...p,
+          imageUrl: `${environment.apiUrl.replace('/api','')}/${p.imageUrl}`
+        }));
+        this.cdr.markForCheck();
       },
+      error: (err) => { 
+        this.error = 'Failed to load products';
+        console.error(err);
+      }
     });
   }
 
-  addToCart(Product: Product) {
-    if (!Product.selectedSize) {
+  onSearch() {
+    clearTimeout(this.searchDebounce);
+    this.searchDebounce = setTimeout(() => this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm), 350);
+  }
+
+  onCategoryChange(event: any) {
+    this.selectedCategoryId = +event.target.value || null;
+    this.loadProducts(this.selectedCategoryId ?? undefined, this.searchTerm);
+  }
+
+  addToCart(product: Product) {
+    if (!product.selectedSize) {
       alert('Please select a size');
-      this.DescriptionSer.SetProductDescription(Product);
+      this.DescriptionSer.SetProductDescription(product);
       this.router.navigate(['product-description']);
     }
   }
 
-  showMoreProducts(product: Product) {
-    this.DescriptionSer.SetProductDescription(product);
-    this.router.navigate(['/product-description']);
-  }
+  showMoreProducts(product: Product) { this.DescriptionSer.SetProductDescription(product); this.router.navigate(['/product-description']); }
+ private showToast(message: string) {
+  this.snackBar.open(message, '✖', {
+    duration: 4000,
+    panelClass: ['toast-red'],  // must match your global CSS class
+    horizontalPosition: 'right',
+    verticalPosition: 'top'
+  });
+}
 
   addToWishlist(productId: number) {
-    if (this.UserAuth.UserAuthenticate()) {
-      this.Service.AddToWishList(productId).subscribe({
-        next: () => this.router.navigate(['/wish']),
-        error: (error) => {
-          if (error.status === 400) {
-            alert('Product already in the wishlist.');
-            this.router.navigate(['/wish']);
-          }
-        },
-      });
-    } else {
-      alert('Please log in first to add to the wishlist.');
-      this.router.navigate(['/login']);
-    }
+  if (this.UserAuth.UserAuthenticate()) {
+    this.Service.AddToWishList(productId).subscribe({
+      next: () => {
+        this.router.navigate(['/wish']);
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          this.showToast('Product already in wishlist');
+          this.router.navigate(['/wish']);
+        } else {
+          this.showToast('Failed to add product to wishlist');
+        }
+      }
+    });
+  } else {
+    this.showToast('Please log in to add to wishlist');
   }
+}
 
-  trackByProductId(index: number, product: Product) {
-    return product.id;
-  }
+
+  trackByProductId(index: number, product: Product) { return product.id; }
 }

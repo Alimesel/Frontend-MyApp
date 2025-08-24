@@ -29,6 +29,7 @@ export class CartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    window.scroll({top : 0, behavior : 'smooth'})
     this.loadCart();
     this.stripe = loadStripe('pk_test_51Q14ZPLUegd08TjlSIsNCpa5M0w2SXWhy55RsJpCwTSmdf7gekd5rKqw6WAKk7jmFgHclkLjhMqDN9IjiQhGVgPT001SajDZgb');  
   }

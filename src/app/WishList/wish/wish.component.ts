@@ -26,6 +26,7 @@ export class WishComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    window.scroll({top :0,behavior : 'smooth'})
    this.GetWishListItems();
   }
   GetWishListItems() {

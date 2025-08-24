@@ -6,6 +6,7 @@ import { CartserviceService } from 'src/app/Service/cartservice.service';
 import { DescriptionService } from 'src/app/Service/description.service';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-show-more',
@@ -32,13 +33,12 @@ export class ShowMoreComponent implements OnInit {
     private CartSer: CartserviceService,
     private router: Router,
     private UserAuth: UserAuthenticationService,
-    private Service: ServiceService
+    private Service: ServiceService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.Product = this.DescriptionSer.GetProductDescription();
-
-    // Scroll to top after load
     setTimeout(() => this.ScrollUp(), 10);
 
     this.DescriptionSer.description$.subscribe(result => {
@@ -53,15 +53,33 @@ export class ShowMoreComponent implements OnInit {
 
     // Assign size options by category
     if (this.Product.category?.id === 1 || this.Product.category?.id === 3) {
-      this.sizeOptions = ['S', 'M', 'L', 'XL','XXL'];
+      this.sizeOptions = ['S', 'M', 'L', 'XL', 'XXL'];
     } else if (this.Product.category?.id === 2) {
       this.sizeOptions = ["38", "39", "40", "41", "42"];
     }
   }
 
+  // ---------------------- TOASTS ----------------------
+  private showToast(message: string, type: 'success' | 'error' | 'warning' | 'info') {
+    let panelClass = '';
+    switch(type) {
+      case 'success': panelClass = 'toast-success'; break;
+      case 'error': panelClass = 'toast-error'; break;
+      case 'warning': panelClass = 'toast-warning'; break;
+      case 'info': panelClass = 'toast-info'; break;
+    }
+
+    this.snackBar.open(message, '✖', {
+      duration: 4000,
+      panelClass: [panelClass],
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    });
+  }
+
   addToCart(product: Product) {
     if (!product.selectedSize) {
-      alert('Please select a size');
+      this.showToast('Please select a size before adding to the cart.', 'warning');
       return;
     }
     this.CartSer.addToCart(product).subscribe(() => {
@@ -71,6 +89,7 @@ export class ShowMoreComponent implements OnInit {
 
   selectSize(size: string) {
     this.Product.selectedSize = size;
+
   }
 
   goBack() {
@@ -78,20 +97,21 @@ export class ShowMoreComponent implements OnInit {
   }
 
   addToWishlist(productId: number) {
-    if (this.UserAuth.UserAuthenticate()) {
-      this.Service.AddToWishList(productId).subscribe({
-        next: () => this.router.navigate(['/wish']),
-        error: (error) => {
-          if (error.status === 400) {
-            alert("Product already in the wishlist.");
-            this.router.navigate(['/wish']);
-          }
-        }
-      });
-    } else {
-      alert("Please log in first to add to the wishlist.");
-      this.router.navigate(['/login']);
+    if (!this.UserAuth.UserAuthenticate()) {
+      this.showToast('Please log in first to add products to your wishlist.', 'info');
+      return;
     }
+
+    this.Service.AddToWishList(productId).subscribe({
+      next: () =>{ this.router.navigate(['/wish'])},
+      error: (error) => {
+        if (error.status === 400) {
+          this.showToast('This product is already in your wishlist.', 'warning');
+        } else {
+          this.showToast('Failed to add product to wishlist. Try again later.', 'error');
+        }
+      }
+    });
   }
 
   GetProductsByCategory() {
