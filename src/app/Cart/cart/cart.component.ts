@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Cart } from 'src/app/Interfaces/Carts';
 import { DescriptionService } from 'src/app/Service/description.service';
 import { environment } from 'src/environments/environment.prod';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -25,7 +26,8 @@ export class CartComponent implements OnInit {
     private UserAuth: UserAuthenticationService,
     private service: ServiceService,
     private router: Router,
-    private DescriptionSer: DescriptionService
+    private DescriptionSer: DescriptionService,
+     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -85,8 +87,7 @@ export class CartComponent implements OnInit {
     const userId = Number(decoded?.sub);  // Ensure userId is a number
 
     if (!userId || isNaN(userId)) {
-      alert('Please log in first');
-      this.router.navigate(['/login']);
+      this.toastr.error('Please log in first');
       return;
     }
 
