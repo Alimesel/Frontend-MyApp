@@ -175,3 +175,61 @@ body {
     flex: none;
   }
 }
+/* ========== SEARCHABLE CITY DROPDOWN ========== */
+.profile-field {
+  position: relative; /* Required for absolute dropdown */
+}
+
+.profile-field input#city {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.city-list {
+  max-height: 160px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.city-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.city-list li:hover {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+}
+
+/* Scrollbar for city list */
+.city-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.city-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.city-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Ensure city input aligns with form style */
+.profile-field input#city:focus {
+  border-color: #ca5535;
+  background-color: #f0f8ff;
+  outline: none;
+}

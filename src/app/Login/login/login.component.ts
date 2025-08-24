@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ServiceService } from 'src/app/Service/service.service';
 import { UserAuthenticationService } from 'src/app/Service/user-authentication.service';
 import { CartserviceService } from 'src/app/Service/cartservice.service';
-import { LoginUser, UserDTO } from 'src/app/Interfaces/User';
 
 @Component({
   selector: 'app-auth',
@@ -15,6 +14,17 @@ import { LoginUser, UserDTO } from 'src/app/Interfaces/User';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   registerForm!: FormGroup;
+
+  // Lebanese cities array
+  lebaneseCities: string[] = [
+    'Beirut', 'Tripoli', 'Sidon', 'Tyre', 'Zahle', 'Jounieh', 'Byblos', 
+    'Batroun', 'Baalbek', 'Saida', 'Aley', 'Bcharre', 'Rachaya', 'Jezzine', 'Nabatieh'
+  ];
+
+  // For searchable city dropdown
+  selectedCity: string = '';
+  showCityList: boolean = false;
+  filteredCities: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -26,7 +36,11 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    window.scrollTo({top : 0, behavior :'smooth'})
+    window.scrollTo({top : 0, behavior :'smooth'});
+
+    // Initialize filteredCities
+    this.filteredCities = [...this.lebaneseCities];
+
     // Custom validators
     const forbiddenChars = (control: AbstractControl) =>
       /<|>|{|}|\(|\)|;|script/i.test(control.value) ? { forbidden: true } : null;
@@ -54,8 +68,8 @@ export class LoginComponent implements OnInit {
       Email: ['', [Validators.required, Validators.email, gmailValidator]],
       Password: ['', [Validators.required, Validators.minLength(6), passwordValidator]],
       PhoneNumber: ['', [Validators.required, lebanesePhoneValidator]],
-      Country: ['', [forbiddenChars]],
-      City: ['', [forbiddenChars]]
+      Country: ['Lebanon'], // prefilled readonly
+      City: ['', [Validators.required]]
     });
   }
 
@@ -95,7 +109,7 @@ export class LoginComponent implements OnInit {
         const msg = err.error;
         if (msg.includes('Username')) this.toastr.error('Username is already taken');
         else if (msg.includes('Email')) this.toastr.error('Email is already used');
-         else if (msg.includes('Phone')) this.toastr.error('Phone number is already used');
+        else if (msg.includes('Phone')) this.toastr.error('Phone number is already used');
         else if (msg.includes('Password')) this.toastr.error('Password invalid');
         else this.toastr.error('Registration failed');
       }
@@ -127,5 +141,27 @@ export class LoginComponent implements OnInit {
         else if (control.errors['invalidPassword']) this.toastr.error('Password must contain only letters and numbers');
       }
     });
+  }
+
+  // Searchable city dropdown methods
+  filterCities(event: any) {
+    const val = event.target.value.toLowerCase();
+    this.filteredCities = this.lebaneseCities.filter(city =>
+      city.toLowerCase().includes(val)
+    );
+    this.showCityList = true;
+  }
+
+  selectCity(city: string) {
+    this.selectedCity = city;
+    this.registerForm.controls['City'].setValue(city);
+    this.showCityList = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any) {
+    if (!event.target.closest('.group')) {
+      this.showCityList = false;
+    }
   }
 }

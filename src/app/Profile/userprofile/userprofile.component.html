@@ -64,21 +64,32 @@
           id="country"
           name="country"
           [(ngModel)]="profile.country"
-          [readonly]="!isEditing"
+          readonly
           required
         />
       </div>
+
+      <!-- City Searchable Dropdown -->
       <div class="profile-field">
         <label for="city"><strong>City:</strong></label>
         <input
           type="text"
           id="city"
           name="city"
-          [(ngModel)]="profile.city"
+          [value]="selectedCity"
+          (input)="filterCities($event)"
+          (focus)="showCityList=true"
           [readonly]="!isEditing"
+          placeholder="Select City"
           required
         />
+        <ul class="city-list" *ngIf="showCityList && isEditing">
+          <li *ngFor="let city of filteredCities" (click)="selectCity(city)">
+            {{city}}
+          </li>
+        </ul>
       </div>
+
     </div>
     <div class="button-group">
       <button type="button" *ngIf="!isEditing" (click)="enableEditing()" class="edit-button">Edit</button>

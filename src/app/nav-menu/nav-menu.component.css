@@ -253,8 +253,16 @@
     transform: translateY(5px);
   }
 
-  .connect-btn {
+.connect-btn {
     font-size: 0.65rem;
-    padding: 2px 6px;
+    padding: 2px 5px;  /* reduce horizontal padding */
+    white-space: nowrap; /* prevent wrapping */
+    max-width: 70px;     /* prevent overflow */
+    overflow: hidden;
+    text-overflow: ellipsis; /* show "..." if text too long */
+  }
+
+  .navbar-right {
+    gap: 4px;  /* reduce spacing between icons */
   }
 }

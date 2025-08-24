@@ -5,6 +5,7 @@
          *ngFor="let imgUrl of getActiveSlides(section); let i = index"
          [class.active]="i === currentSlideIndex">
       <picture>
+        <source [srcset]="imgUrl" media="(max-width: 480px)">
         <img [src]="imgUrl" 
              [alt]="section.description" 
              width="1920" height="1080" 
@@ -23,6 +24,7 @@
 
 <!-- MAIN CONTENT -->
 <div class="home-container">
+  <!-- CATEGORY SECTIONS -->
   <div class="category-sections-wrapper">
     <ng-container *ngFor="let section of filteredOtherSections">
       <div class="category-section">
@@ -39,6 +41,7 @@
     </ng-container>
   </div>
 
+  <!-- PRODUCTS -->
   <section class="products-section" id="products-section">
     <div class="products-header">
       <h2>Our Featured Products</h2>
@@ -62,7 +65,6 @@
 
     <div *ngIf="Product.length === 0" class="no-products">
       <div class="no-products-content">
-        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Products" width="120" height="120"/>
         <h3>No products found</h3>
         <p>We couldn’t find any products matching your search or selected category.</p>
         <button class="back-btn" (click)="loadProducts()">Browse All Products</button>
